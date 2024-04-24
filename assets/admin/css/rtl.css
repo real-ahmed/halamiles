@@ -1,0 +1,119 @@
+/* .sidebar {
+    border-left: 1px solid #66666675;
+    border-right: unset;
+    right: 0;
+    left:unset;
+    direction: rtl;
+}
+
+.sidebar .res-sidebar-close-btn {
+    left: -35px;
+    
+}
+.sidebar .slimScrollDiv .slimScrollBar {
+    right: unset!important;
+    left: 1px;
+}
+.slimScrollRail{
+    right: unset!important;
+    left: 1px;
+}
+
+
+.sidebar__menu .sidebar-menu-item > a {
+    border-right: 3px solid transparent;
+    border-left: 0!important;
+}
+
+.sidebar__menu .menu-icon {
+    margin-right: unset!important;
+    margin-left: 15px;
+    
+}
+
+.sidebar__menu .sidebar-dropdown > a {
+    padding-right: 25px;
+}
+
+.sidebar__menu .sidebar-dropdown > a::before {
+    right: unset!important;
+    left: 20px;
+    
+}
+
+.sidebar__menu-header {
+    margin: 25px 25px 8px 0px;
+}
+
+
+.navbar-wrapper {
+    direction: rtl;
+    margin-right: 250px;
+    margin-left: unset;
+}
+.navbar__right {
+    margin-right: auto!important;
+    margin-left:unset;
+}
+.dropdown-menu__header{
+    text-align:right;
+}
+
+.navbar-user__info {
+    padding-right: 10px;
+    padding-left: 0px;
+}
+.navbar-user .icon {
+    padding-right: 10px;
+    padding-left: 0px;
+}
+.body-wrapper {
+    direction: rtl;
+    margin-right: 250px;
+    margin-left: 0;
+}
+.widget-two .overlay-icon {
+    right: unset;
+    left: -15px;
+}
+.widget-two__content {
+    padding-right: 20px;
+    padding-left: 20px;
+}
+.widget-two__btn {
+    right: unset!important;
+    left: 5px;
+}
+@media (min-width: 576px){
+.text-sm-end {
+    text-align: left!important;
+}}
+
+table thead th:first-child {
+    border-radius: 0 5px 0 0;
+    text-align: right;
+}
+
+table thead th:last-child {
+    border-radius: 5px 0 0 0;
+    text-align: left;
+}
+
+.input-group:not(.has-validation)>.dropdown-toggle:nth-last-child(n+3), .input-group:not(.has-validation)>:not(:last-child):not(.dropdown-toggle):not(.dropdown-menu) {
+    border-radius: 5px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    border-radius: 5px;
+    margin-left: 0px;
+    margin-right: -1px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+
+}
+
+table td:last-child {
+    text-align: left;
+} */

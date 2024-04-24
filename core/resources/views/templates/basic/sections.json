@@ -1,0 +1,187 @@
+{
+    "category": {
+        "builder": true,
+        "name": "Category Section",
+        "content": {
+            "heading": "text"
+        }
+    },
+    "today_deal": {
+        "builder": true,
+        "name": "Today's Deal Section",
+        "content": {
+            "heading": "text"
+        }
+    },
+    "top_deal": {
+        "builder": true,
+        "name": "Top Deal Section",
+        "content": {
+            "heading": "text"
+        }
+    },
+    "expired_soon_deal": {
+        "builder": true,
+        "name": "Expired Soon Section",
+        "content": {
+            "heading": "text"
+        }
+    },
+    "popular_store": {
+        "builder": true,
+        "name": "Popular Store Section",
+        "content": {
+            "heading": "text"
+        }
+    },
+    "trend_product": {
+        "builder": true,
+        "name": "Trend Product Section",
+        "content": {
+            "heading": "text"
+        }
+    },
+    "testimonial": {
+        "builder": true,
+        "name": "Testimonial Section",
+        "content": {
+            "heading": "text",
+            "subheading": "text"
+        },
+        "element": {
+            "icon": "icon",
+            "message": "textarea",
+            "name": "text",
+            "designation": "text",
+            "modal": true
+        }
+    },
+    "counter": {
+        "builder": true,
+        "name": "Counter Section",
+        "no_selection": true,
+        "element": {
+            "title": "text",
+            "counter_digit": "text",
+            "modal": true
+        }
+    },
+    "policy_pages": {
+        "builder": true,
+        "no_selection":true,
+        "name": "Policy Pages",
+        "element": {
+            "title": "text",
+            "language":"text",
+            "details": "textarea-nic",
+
+            "modal": false
+        }
+    },
+    "footer_pages": {
+        "builder": true,
+        "no_selection":true,
+        "name": "Footer Pages",
+        "element": {
+            "title": "text",
+            "language":"text",
+            "details": "textarea-nic",
+
+            "modal": false
+        }
+    },
+     "info_pages": {
+        "builder": true,
+        "no_selection":true,
+        "name": "Info Pages",
+        "element": {
+            "title": "text",
+            "language":"text",
+            "details": "textarea-nic",
+
+            "modal": false
+        }
+    },
+    "breadcrumb": {
+        "builder": true,
+        "no_selection":true,
+        "name": "Breadcrumb Section",
+        "content": {
+            "images": {
+                "background_image": {
+                    "size": "1920x720"
+                }
+            }
+        }
+    },
+
+    "blog": {
+        "builder": true,
+        "name": "Blog Section",
+        "content": {
+            "heading": "text"
+        },
+        "element": {
+            "images":{
+                "blog_image":{
+                    "size":"850x460",
+                    "thumb":"425x230"
+                }
+            },
+            "title": "text",
+            "description": "textarea-nic",
+            "modal": false
+        }
+    },
+    "social_icon": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Social Icons",
+        "element": {
+            "title": "text",
+            "social_icon": "icon",
+            "url": "text",
+            "modal": true
+        }
+    },
+    "contact_us": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Contact Us",
+        "content": {
+            "title": "text",
+            "short_details": "text",
+            "contact_details": "text",
+            "email_address": "text",
+            "contact_number": "text",
+            "map_url": "text"
+        }
+    },
+    "login": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Login Section",
+        "content": {
+            "images": {
+                "image": {
+                    "size": "640x500"
+                }
+            },
+            "heading": "text"
+        }
+    },
+    "register": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Register Section",
+        "content": {
+            "images": {
+                "image": {
+                    "size": "640x500"
+                }
+            },
+            "heading": "text"
+
+        }
+    }
+}

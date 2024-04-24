@@ -1,0 +1,20 @@
+[12-Jul-2023 15:05:50 Asia/Riyadh] PHP Fatal error:  Cannot redeclare App\Models\User::deposits() in /home4/halamiles/public_html/core/app/Models/User.php on line 199
+[29-Jul-2023 11:48:32 Africa/Abidjan] PHP Fatal error:  Cannot use Illuminate\Console\Command as Command because the name is already in use in /home4/halamiles/public_html/core/app/Console/Commands/awin.php on line 6
+[03-Aug-2023 13:11:47 Africa/Abidjan] PHP Fatal error:  Cannot declare class App\Console\Commands\AwinImport, because the name is already in use in /home4/halamiles/public_html/core/app/Console/Commands/awin.php on line 11
+[04-Aug-2023 00:54:40 Africa/Abidjan] PHP Fatal error:  Cannot redeclare App\Console\Commands\Admitad::getAccessToken() in /home4/halamiles/public_html/core/app/Console/Commands/Admitad.php on line 72
+[04-Aug-2023 00:54:44 Africa/Abidjan] PHP Fatal error:  Cannot redeclare App\Console\Commands\Admitad::getAccessToken() in /home4/halamiles/public_html/core/app/Console/Commands/Admitad.php on line 72
+[04-Aug-2023 00:58:50 Africa/Abidjan] PHP Fatal error:  Trait "App\Console\Commands\Illuminate\Support\Facades\Http" not found in /home4/halamiles/public_html/core/app/Console/Commands/Admitad.php on line 13
+[04-Aug-2023 00:58:52 Africa/Abidjan] PHP Fatal error:  Trait "App\Console\Commands\Illuminate\Support\Facades\Http" not found in /home4/halamiles/public_html/core/app/Console/Commands/Admitad.php on line 13
+[04-Aug-2023 10:28:37 America/Chicago] PHP Parse error:  syntax error, unexpected variable "$toRate" in /home4/halamiles/public_html/core/app/Http/Helpers/helpers.php on line 52
+[04-Aug-2023 10:28:42 America/Chicago] PHP Parse error:  syntax error, unexpected variable "$toRate" in /home4/halamiles/public_html/core/app/Http/Helpers/helpers.php on line 52
+[04-Aug-2023 10:29:01 America/Chicago] PHP Parse error:  syntax error, unexpected variable "$toRate" in /home4/halamiles/public_html/core/app/Http/Helpers/helpers.php on line 52
+[04-Aug-2023 10:29:07 America/Chicago] PHP Parse error:  syntax error, unexpected variable "$toRate" in /home4/halamiles/public_html/core/app/Http/Helpers/helpers.php on line 52
+[04-Aug-2023 10:29:20 America/Chicago] PHP Parse error:  syntax error, unexpected variable "$toRate" in /home4/halamiles/public_html/core/app/Http/Helpers/helpers.php on line 52
+[04-Aug-2023 10:29:26 America/Chicago] PHP Parse error:  syntax error, unexpected variable "$toRate" in /home4/halamiles/public_html/core/app/Http/Helpers/helpers.php on line 52
+[04-Aug-2023 10:29:52 America/Chicago] PHP Parse error:  syntax error, unexpected variable "$toRate" in /home4/halamiles/public_html/core/app/Http/Helpers/helpers.php on line 52
+[04-Aug-2023 10:30:13 America/Chicago] PHP Parse error:  syntax error, unexpected variable "$toRate" in /home4/halamiles/public_html/core/app/Http/Helpers/helpers.php on line 52
+[04-Aug-2023 10:30:29 America/Chicago] PHP Parse error:  syntax error, unexpected variable "$toRate" in /home4/halamiles/public_html/core/app/Http/Helpers/helpers.php on line 52
+[04-Aug-2023 10:30:32 America/Chicago] PHP Parse error:  syntax error, unexpected variable "$toRate" in /home4/halamiles/public_html/core/app/Http/Helpers/helpers.php on line 52
+[04-Aug-2023 10:31:18 America/Chicago] PHP Parse error:  syntax error, unexpected variable "$toRate" in /home4/halamiles/public_html/core/app/Http/Helpers/helpers.php on line 52
+[04-Aug-2023 10:31:37 America/Chicago] PHP Parse error:  syntax error, unexpected variable "$toRate" in /home4/halamiles/public_html/core/app/Http/Helpers/helpers.php on line 52
+[04-Aug-2023 10:32:22 America/Chicago] PHP Parse error:  syntax error, unexpected variable "$toRate" in /home4/halamiles/public_html/core/app/Http/Helpers/helpers.php on line 52

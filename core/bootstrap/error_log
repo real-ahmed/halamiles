@@ -1,0 +1,4 @@
+[09-Sep-2023 22:05:37 America/Chicago] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home4/halamiles/public_html/core/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home4/halamiles/public_html/core/bootstrap/app.php on line 14
