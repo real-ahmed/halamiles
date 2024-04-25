@@ -32,7 +32,7 @@ class admitad extends Command
         $responseData = $response->json();
 
         if (!empty($responseData['results'])) {
-            var_dump($responseData['results']);
+
             $this->parseData($responseData['results']);
             $this->info('Data parsed and saved successfully');
         } else {
@@ -100,7 +100,7 @@ class admitad extends Command
                 }
 
                 $siteTransaction = ClickTransaction::where('click_id', $clickRef)->first();
-
+                var_dump($amount);
                 if ($siteTransaction) {
                     Transaction::where('id', $siteTransaction->transaction_id)
                         ->update(['status' => $status]);
