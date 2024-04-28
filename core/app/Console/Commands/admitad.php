@@ -99,8 +99,10 @@ class admitad extends Command
                     $status = 1;
                 }
 
-                $siteTransaction = ClickTransaction::where('network_transaction_id', (int) $transaction['action_id'])->first();
-
+                $siteTransaction = ClickTransaction::where('network_transaction_id', (int) $transaction['action_id'])
+                    ->where('click_id', 1)
+                    ->where('click_id', $clickRef)
+                    ->first();
                 if ($siteTransaction) {
                     Transaction::where('id', $siteTransaction->transaction_id)
                         ->update(['status' => $status]);

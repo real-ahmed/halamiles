@@ -58,7 +58,7 @@ class awin extends Command
                 } elseif ($cashback_type == 2) {
                     $orderAmount = (float) preg_replace('~[^0-9.,]~', '', $transaction['saleAmount']['amount']);
                     $orderAmount = round($orderAmount, 2);
-                    $amount = ((float) $cashback / 100) * $orderAmount;
+                    $amount = ((float) $click->model->user_percentage / 100) * $orderAmount;
                     $amount = convertCurrency($amount, $transaction['saleAmount']['currency']);
                     $cashback_type = 1;
                 }
@@ -69,7 +69,9 @@ class awin extends Command
                     $status = 1;
                 }
 
-                $siteTransaction = ClickTransaction::where('click_id', $clickRef)->first();
+                $siteTransaction = ClickTransaction::where('network_transaction_id', (int) $transaction['action_id'])
+                    ->where('click_id', $clickRef)
+                    ->first();
 
                 if ($siteTransaction) {
                     Transaction::where('id', $siteTransaction->transaction_id)
@@ -85,6 +87,9 @@ class awin extends Command
                     $clickTransaction = new ClickTransaction;
                     $clickTransaction->click_id = $click->id;
                     $clickTransaction->transaction_id = $newSiteTransaction->id;
+                    $clickTransaction->network_transaction_id = (int) $transaction['id'];
+                    $clickTransaction->category_rate = $transaction['type'];
+
                     $clickTransaction->save();
                 }
             }
