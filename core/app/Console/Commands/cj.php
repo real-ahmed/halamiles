@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Click;
+use App\Models\ClickTransaction;
+use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
-use Carbon\Carbon;
-use App\Models\Click;
-use App\Models\Transaction;
-use App\Models\ClickTransaction;
 
 class CJ extends Command
 {
@@ -56,24 +56,24 @@ class CJ extends Command
                 $status = 0;
 
 
-
                 if ($cashback_type == 1) {
-                    $amount = (float) $cashback;
+                    $amount = (float)$cashback;
                 } elseif ($cashback_type == 2) {
-                    $orderAmount = (float) preg_replace('~[^0-9.,]~', '', $transaction['sale-amount']);
+                    $orderAmount = (float)preg_replace('~[^0-9.,]~', '', $transaction['sale-amount']);
                     $orderAmount = round($orderAmount, 2);
-                    $amount = ((float) $cashback / 100) * $orderAmount;
+                    $amount = ((float)$click->model->user_percentage / 100) * $orderAmount;
                     $cashback_type = 1;
                 }
 
-                if ((string) $transaction['action-status'] === 'D' || (string) $transaction['action-status'] === 'F') {
+                if ((string)$transaction['action-status'] === 'D' || (string)$transaction['action-status'] === 'F') {
                     $status = 2;
-                } elseif ((string) $transaction['action-status'] === 'A') {
+                } elseif ((string)$transaction['action-status'] === 'A') {
                     $status = 1;
                 }
 
-                $siteTransaction = ClickTransaction::where('click_id', $clickRef)->first();
-
+                $siteTransaction = ClickTransaction::where('network_transaction_id', (int)$transaction['action-tracker-id'])
+                    ->where('click_id', $clickRef)
+                    ->first();
                 if ($siteTransaction) {
                     Transaction::where('id', $siteTransaction->transaction_id)
                         ->update(['status' => $status]);
@@ -88,6 +88,8 @@ class CJ extends Command
                     $clickTransaction = new ClickTransaction;
                     $clickTransaction->click_id = $click->id;
                     $clickTransaction->transaction_id = $newSiteTransaction->id;
+                    $clickTransaction->network_transaction_id = (int)$transaction['action-tracker-id'];
+                    $clickTransaction->category_rate = $transaction['action-tracker-name'];
                     $clickTransaction->save();
                 }
             }
