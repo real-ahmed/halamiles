@@ -108,7 +108,11 @@
 
                                     <th>@lang('Title')</th>
 
+                                    <th>@lang('Click ID')</th>
+
                                     <th>@lang('Date')</th>
+
+                                    <th>@lang('rate/category')</th>
 
                                     <th>@lang('User')</th>
 
@@ -141,9 +145,22 @@
 
                                         </td>
 
+                                        <td data-label="@lang('Click ID')">
+
+                                            {{$transaction->clickTransaction?->click_id ?? '-' }}
+
+                                        </td>
+
                                         <td data-label="@lang('Date')">
 
                                             {{ showDateTime($transaction->created_at) }}<br>{{ diffForHumans($transaction->created_at) }}
+
+                                        </td>
+
+
+                                        <td data-label="@lang('rate/category')">
+
+                                            {{$transaction->clickTransaction?->category_rate ?? '-' }}
 
                                         </td>
 

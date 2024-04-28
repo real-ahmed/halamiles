@@ -577,6 +577,7 @@ class ManageCouponController extends Controller
         $store->cashbacktype_id  = $request->cashbacktype_id;
         $store->network_id  = $request->network_id;
         $store->cashback  = $request->cashback;
+        $store->user_percentage  = $request->user_percentage;
         $store->offer_cashback  = $request->offer_cashback;
         $store->ending_date       = date('Y-m-d H:i:s', strtotime($request->ending_date)); // Format the date correctly
 
@@ -584,7 +585,6 @@ class ManageCouponController extends Controller
         $store->featured  = $request->featured ? 1 : 0;
         $store->terms = $request->terms;
         $store->description = $request->description;
-        $store->save();
         $store->countries()->sync($request->input('countries_id'), true);
 
         $store->channels()->sync($request->input('channels_id'), true);

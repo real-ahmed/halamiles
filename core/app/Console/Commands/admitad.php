@@ -32,7 +32,7 @@ class admitad extends Command
         $responseData = $response->json();
 
         if (!empty($responseData['results'])) {
-
+            var_dump($responseData['results']);
             $this->parseData($responseData['results']);
             $this->info('Data parsed and saved successfully');
         } else {
@@ -88,7 +88,7 @@ class admitad extends Command
                 } elseif ($cashback_type == 2) {
                     $orderAmount = (float) preg_replace('~[^0-9.,]~', '', $transaction['cart']);
                     $orderAmount = round($orderAmount, 2);
-                    $amount = ((float) $cashback / 100) * $orderAmount;
+                    $amount = ((float) $click->model->user_percentage / 100) * $orderAmount;
                     $amount = convertCurrency($amount, $transaction['currency']);
                     $cashback_type = 1;
                 }
@@ -99,12 +99,13 @@ class admitad extends Command
                     $status = 1;
                 }
 
-                $siteTransaction = ClickTransaction::where('click_id', $clickRef)->first();
-                var_dump($amount);
+                $siteTransaction = ClickTransaction::where('network_transaction_id', (int) $transaction['action_id'])->first();
+
                 if ($siteTransaction) {
                     Transaction::where('id', $siteTransaction->transaction_id)
                         ->update(['status' => $status]);
                 } else {
+
                     $newSiteTransaction = new Transaction;
                     $newSiteTransaction->user_id = $click->user_id;
                     $newSiteTransaction->amount = $amount;
@@ -115,6 +116,9 @@ class admitad extends Command
                     $clickTransaction = new ClickTransaction;
                     $clickTransaction->click_id = $click->id;
                     $clickTransaction->transaction_id = $newSiteTransaction->id;
+                    $clickTransaction->network_transaction_id = (int) $transaction['action_id'];
+                    $clickTransaction->category_rate = $transaction['action'];
+
                     $clickTransaction->save();
                 }
             }

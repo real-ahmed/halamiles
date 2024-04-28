@@ -6,7 +6,7 @@
         </div>
         <div class="card-body">
             <form action="{{ route('admin.store.save', $store ? $store->id : '') }}" method="POST"
-                enctype="multipart/form-data">
+                  enctype="multipart/form-data">
                 @csrf
                 <div class="row">
                     <div class="col-lg-4">
@@ -17,18 +17,21 @@
                                         <div class="thumb">
                                             <div class="avatar-preview">
                                                 <div class="profilePicPreview"
-                                                    style="background-image: url({{ getImage(getFilePath('store') . '/' . @$store->image) }})">
+                                                     style="background-image: url({{ getImage(getFilePath('store') . '/' . @$store->image) }})">
                                                     <button type="button" class="remove-image"><i
                                                             class="fa fa-times"></i></button>
                                                 </div>
                                             </div>
                                             <div class="avatar-edit">
                                                 <input type="file" class="profilePicUpload" name="image"
-                                                    id="profilePicUpload1" accept=".png, .jpg, .jpeg">
-                                                <label for="profilePicUpload1" class="bg--success">@lang('Coupon Image')</label>
-                                                <small class="mt-2 text-facebook">@lang('Supported files'): <b>@lang('jpeg'),
+                                                       id="profilePicUpload1" accept=".png, .jpg, .jpeg">
+                                                <label for="profilePicUpload1"
+                                                       class="bg--success">@lang('Coupon Image')</label>
+                                                <small class="mt-2 text-facebook">@lang('Supported files'):
+                                                    <b>@lang('jpeg'),
                                                         @lang('jpg'), @lang('png').</b> @lang('Image will be resized into
-                                                                                                            200x200px') </small>
+                                                                                                            200x200px')
+                                                </small>
                                             </div>
                                         </div>
                                     </div>
@@ -43,19 +46,17 @@
                                 <div class="form-group">
 
                                     <label>@lang('Name')</label>
-        
-                                    <input class="form-control" value="{{ @$store->name }}" type="text" name="name" required>
-        
+
+                                    <input class="form-control" value="{{ @$store->name }}" type="text" name="name"
+                                           required>
+
                                 </div>
                             </div>
-
-
 
 
                             <div class="col-md-6">
 
 
-                                
                                 <div class="form-group">
                                     <label class="form-control-label">@lang('Category')</label>
                                     <select name="category_id" class="form-control" required>
@@ -74,7 +75,8 @@
                                     <label>@lang('Cashback')</label>
                                     <div class="input-group">
                                         <input class="form-control" type="number" step="any" name="cashback"
-                                            value="{{ $store ? $store->getRawOriginal('cashback') : old('cashback') }}" required>
+                                               value="{{ $store ? $store->getRawOriginal('cashback') : old('cashback') }}"
+                                               required>
                                         <select name='cashbacktype_id' style='width=65px;' class="input-group-text">
 
                                             @foreach ($cashbacktypes as $cashbacktype)
@@ -88,31 +90,44 @@
                                 </div>
                             </div>
 
-                           
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>@lang('user %')</label>
+                                    <div class="input-group">
+                                        <input class="form-control" type="number" step="any" name="user_percentage"
+                                               value="{{ $store ? $store->getRawOriginal('user_percentage') : old('user_percentage') }}"
+                                               required>
+                                        <span style='width=65px;' class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+
                             <div class="col-md-6">
 
 
                                 <div class="form-group">
 
                                     <div>
-        
+
                                         <label style="width: 49%; padding-left: 10px;">@lang('Cashback Offer')</label>
-        
+
                                         <label style="width: 49%; padding-left: 10px;"> @lang('Ending Date') </label>
-        
+
                                     </div>
-        
+
                                     <div class="input-group">
-        
-                                        <input class="form-control" value="{{ @$store->offer_cashback }}" type="number" step="any" name="offer_cashback">
-        
+
+                                        <input class="form-control" value="{{ @$store->offer_cashback }}" type="number"
+                                               step="any" name="offer_cashback">
+
                                         <input class="form-control" type="date" name="ending_date"
-                                        value="{{ isset($store->ending_date) ? (new DateTime($store->ending_date))->format('d-m-Y h:i a') : old('ending_date') }}"
-                                        autocomplete="off">      
+                                               value="{{ isset($store->ending_date) ? (new DateTime($store->ending_date))->format('d-m-Y h:i a') : old('ending_date') }}"
+                                               autocomplete="off">
                                     </div>
-        
-        
-        
+
+
                                 </div>
 
                             </div>
@@ -121,7 +136,7 @@
                                 <div class="form-group">
                                     <label>@lang('Store Url')</label>
                                     <input class="form-control" type="text" name="url"
-                                        value="{{ $store ? $store->url : old('url') }}" >
+                                           value="{{ $store ? $store->url : old('url') }}">
                                 </div>
                             </div>
 
@@ -130,85 +145,83 @@
                                 <div class="form-group">
 
                                     <label class="form-control-label">@lang('Store Network')</label>
-        
+
                                     <select name="network_id" class="form-control" required>
-        
+
                                         <option hidden>@lang('Select One')</option>
-        
+
                                         @foreach ($networks as $network)
-                                            <option value="{{ $network->id }}" {{ isset($store->network) && $store->network_id == $network->id ? 'selected' : '' }}>
-                                                
+                                            <option
+                                                value="{{ $network->id }}" {{ isset($store->network) && $store->network_id == $network->id ? 'selected' : '' }}>
+
                                                 {{ __($network->name) }}   </option>
                                         @endforeach
-        
+
                                     </select>
-        
-        
-        
+
+
                                 </div>
                             </div>
-
 
 
                             <div class="col-md-6">
                                 <div class="form-group">
 
                                     <label>@lang('Marketing channels')</label>
-                    
-                                    <div style='border: solid 0.3px #cccccc; padding: 8px;'>
-                    
-                                        <div class="form-group">
-                    
-                                            <div>
-                    
-                                                <label style="width: 24%; padding-left: 10px;">{{ __('social media') }}</label>
-                    
-                                                <label style="width: 24%; padding-left: 10px;">{{ __('Email') }}</label>
-                    
-                                                <label style="width: 24%; padding-left: 10px;">{{ __('Cashback') }}</label>
-                    
-                                                <label style="width: 24%; padding-left: 10px;">{{ __('Coupon') }}</label>
-                    
-                                            </div>
-                    
-                                            <input type="checkbox"  {{ isset($store->marketing_channels) && json_decode($store->marketing_channels)->social == 1 ? 'checked' : '' }}
 
-                                            data-width="24%" data-onstyle="-success" data-offstyle="-danger"
-                                                data-bs-toggle="toggle" data-on="@lang('Yes')" data-off="@lang('No')"
-                                                name="social">
-                    
-                    
-                    
-                                            <input type="checkbox"{{ isset($store->marketing_channels) && json_decode($store->marketing_channels)->email == 1 ? 'checked' : '' }}
-                                             data-width="24%" data-onstyle="-success" data-offstyle="-danger" 
-                                                data-bs-toggle="toggle" data-on="@lang('Yes')" data-off="@lang('No')"
-                                                name="email">
-                    
-                    
-                    
-                                            <input type="checkbox"{{ isset($store->marketing_channels) && json_decode($store->marketing_channels)->cash == 1 ? 'checked' : '' }}
-                                             data-width="24%" data-onstyle="-success" data-offstyle="-danger"
-                                                data-bs-toggle="toggle" data-on="@lang('Yes')" data-off="@lang('No')"
-                                                name="cash">
-                    
-                    
-                    
-                                            <input type="checkbox"{{ isset($store->marketing_channels) && json_decode($store->marketing_channels)->coupon == 1 ? 'checked' : '' }}
-                                               data-width="24%" data-onstyle="-success" data-offstyle="-danger"
-                                                data-bs-toggle="toggle" data-on="@lang('Yes')" data-off="@lang('No')"
-                                                name="coupon">
-                    
+                                    <div style='border: solid 0.3px #cccccc; padding: 8px;'>
+
+                                        <div class="form-group">
+
+                                            <div>
+
+                                                <label
+                                                    style="width: 24%; padding-left: 10px;">{{ __('social media') }}</label>
+
+                                                <label style="width: 24%; padding-left: 10px;">{{ __('Email') }}</label>
+
+                                                <label
+                                                    style="width: 24%; padding-left: 10px;">{{ __('Cashback') }}</label>
+
+                                                <label
+                                                    style="width: 24%; padding-left: 10px;">{{ __('Coupon') }}</label>
+
+                                            </div>
+
+                                            <input type="checkbox"
+                                                   {{ isset($store->marketing_channels) && json_decode($store->marketing_channels)->social == 1 ? 'checked' : '' }}
+
+                                                   data-width="24%" data-onstyle="-success" data-offstyle="-danger"
+                                                   data-bs-toggle="toggle" data-on="@lang('Yes')" data-off="@lang('No')"
+                                                   name="social">
+
+
+                                            <input type="checkbox"
+                                                   {{ isset($store->marketing_channels) && json_decode($store->marketing_channels)->email == 1 ? 'checked' : '' }}
+                                                   data-width="24%" data-onstyle="-success" data-offstyle="-danger"
+                                                   data-bs-toggle="toggle" data-on="@lang('Yes')" data-off="@lang('No')"
+                                                   name="email">
+
+
+                                            <input type="checkbox"
+                                                   {{ isset($store->marketing_channels) && json_decode($store->marketing_channels)->cash == 1 ? 'checked' : '' }}
+                                                   data-width="24%" data-onstyle="-success" data-offstyle="-danger"
+                                                   data-bs-toggle="toggle" data-on="@lang('Yes')" data-off="@lang('No')"
+                                                   name="cash">
+
+
+                                            <input type="checkbox"
+                                                   {{ isset($store->marketing_channels) && json_decode($store->marketing_channels)->coupon == 1 ? 'checked' : '' }}
+                                                   data-width="24%" data-onstyle="-success" data-offstyle="-danger"
+                                                   data-bs-toggle="toggle" data-on="@lang('Yes')" data-off="@lang('No')"
+                                                   name="coupon">
+
                                         </div>
-                    
+
                                     </div>
-                    
+
                                 </div>
                             </div>
-
-
-                           
-
-
 
 
                         </div>
@@ -218,7 +231,8 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label>@lang('Description')</label>
-                                    <textarea name="description" class="form-control" rows="4" required>{{ $store ? $store->description : old('description') }}</textarea>
+                                    <textarea name="description" class="form-control" rows="4"
+                                              required>{{ $store ? $store->description : old('description') }}</textarea>
                                 </div>
                             </div>
 
@@ -226,7 +240,8 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label>@lang('Terms & Conditions')</label>
-                                    <textarea name="terms" class="form-control" rows="4" required>{{ $store ? $store->terms : old('terms') }}</textarea>
+                                    <textarea name="terms" class="form-control" rows="4"
+                                              required>{{ $store ? $store->terms : old('terms') }}</textarea>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -259,49 +274,55 @@
                                 <div class="form-group">
 
                                     <label>@lang('Featured')</label>
-                    
-                                    <input type="checkbox"{{ @$store->featured == 1 ? 'checked' : '' }} data-width="100%" data-onstyle="-success" data-offstyle="-danger"
-                                        data-bs-toggle="toggle" data-on="@lang('Yes')" data-off="@lang('No')" name="featured">
-                    
+
+                                    <input type="checkbox"
+                                           {{ @$store->featured == 1 ? 'checked' : '' }} data-width="100%"
+                                           data-onstyle="-success" data-offstyle="-danger"
+                                           data-bs-toggle="toggle" data-on="@lang('Yes')" data-off="@lang('No')"
+                                           name="featured">
+
                                 </div>
                             </div>
 
                             @if($store)
-                                
-                           
-                            <div class="col-md-6">
 
-                                <div class="form-group statusGroup">
+                                <div class="col-md-6">
 
-                                    <label>@lang('Status')</label>
-                    
-                                    <input type="checkbox"{{ $store->status == 1 ? 'checked' : '' }} data-width="100%" data-onstyle="-success" data-offstyle="-danger"
-                                        data-bs-toggle="toggle" data-on="@lang('Active')" data-off="@lang('Inactive')" name="status">
-                    
+                                    <div class="form-group statusGroup">
+
+                                        <label>@lang('Status')</label>
+
+                                        <input type="checkbox"
+                                               {{ $store->status == 1 ? 'checked' : '' }} data-width="100%"
+                                               data-onstyle="-success" data-offstyle="-danger"
+                                               data-bs-toggle="toggle" data-on="@lang('Active')"
+                                               data-off="@lang('Inactive')" name="status">
+
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group statusGroup">
+                                <div class="col-md-12">
+                                    <div class="form-group statusGroup">
 
-                                    <label>@lang('Edit note')</label>
-                    
-                                    <textarea class="form-control" name="note" rows="4" required></textarea>
-                    
+                                        <label>@lang('Edit note')</label>
+
+                                        <textarea class="form-control" name="note" rows="4" required></textarea>
+
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group statusGroup"
-                                style=" display: flex; justify-content: space-between; align-items: center;">
-                
-                                <p class='last-update'>{{ __('Last Update : ') }} {{ date_format($store->updated_at, 'd-m-Y h:i a') }}</p>
-                
-                                <a href="javascript:void(0)" class=" notes btn btn-outline--primary box--shadow1">@lang('View History')</a>
-                
-                            </div>
-                            </div>
+                                <div class="col-md-12">
+                                    <div class="form-group statusGroup"
+                                         style=" display: flex; justify-content: space-between; align-items: center;">
+
+                                        <p class='last-update'>{{ __('Last Update : ') }} {{ date_format($store->updated_at, 'd-m-Y h:i a') }}</p>
+
+                                        <a href="javascript:void(0)"
+                                           class=" notes btn btn-outline--primary box--shadow1">@lang('View History')</a>
+
+                                    </div>
+                                </div>
                             @endif
                         </div>
-                       
+
 
                     </div>
 
@@ -318,7 +339,6 @@
             </form>
         </div>
     </div>
-
 
 @endsection
 
@@ -351,45 +371,42 @@
     <script>
 
 
-        
-        (function($) {
+        (function ($) {
             "use strict";
 
             var notes = {!! @$store->notes !!}; // Assuming $store->note is a JSON string
 
-var notesHtml = '';
+            var notesHtml = '';
 
-for (var i = 0; i < notes.length; i++) {
-    var note = notes[i].note;
-    var createdAt = new Date(notes[i].created_at);
+            for (var i = 0; i < notes.length; i++) {
+                var note = notes[i].note;
+                var createdAt = new Date(notes[i].created_at);
 
-    // Format the createdAt date
-    var formattedDate = createdAt.toLocaleDateString('en-US', {
-        month: '2-digit',
-        day: '2-digit',
-        year: 'numeric'
-    });
+                // Format the createdAt date
+                var formattedDate = createdAt.toLocaleDateString('en-US', {
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: 'numeric'
+                });
 
-    var formattedTime = createdAt.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-    });
+                var formattedTime = createdAt.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
 
-    // Append each note and formatted date and time to the notesHtml string
-    notesHtml += '<div>';
-    notesHtml += '<p>Note: ' + note + '</p>';
-    notesHtml += '<p>At: ' + formattedDate + ' ' + formattedTime + '</p>';
-    notesHtml += '</div>';
-    notesHtml += '<hr>';
-}
+                // Append each note and formatted date and time to the notesHtml string
+                notesHtml += '<div>';
+                notesHtml += '<p>Note: ' + note + '</p>';
+                notesHtml += '<p>At: ' + formattedDate + ' ' + formattedTime + '</p>';
+                notesHtml += '</div>';
+                notesHtml += '<hr>';
+            }
 
-$('.notes-box').html(notesHtml);
-
-
+            $('.notes-box').html(notesHtml);
 
 
-                $('.notes-box').html(notesHtml);
+            $('.notes-box').html(notesHtml);
             var start = new Date(),
                 prevDay,
                 startHours = 0;
@@ -410,7 +427,7 @@ $('.notes-box').html(notesHtml);
                 startDate: start,
                 minHours: startHours,
                 maxHours: 23,
-                onSelect: function(fd, d, picker) {
+                onSelect: function (fd, d, picker) {
                     // Do nothing if selection was cleared
                     if (!d) return;
 
@@ -442,14 +459,14 @@ $('.notes-box').html(notesHtml);
                     type: "get",
                     dataType: 'json',
                     delay: 1000,
-                    data: function(params) {
+                    data: function (params) {
                         return {
                             search: params.term,
                             page: params.page,
                             rows: 5,
                         };
                     },
-                    processResults: function(response, params) {
+                    processResults: function (response, params) {
                         params.page = params.page || 1;
                         return {
                             results: response,
@@ -463,7 +480,7 @@ $('.notes-box').html(notesHtml);
                 dropdownParent: $('.card-body')
             });
 
-            $('[name=action]').on('change', function() {
+            $('[name=action]').on('change', function () {
                 var action = $('[name=action]').val();
                 if (action == 3) {
                     $('.reason').show();
@@ -472,7 +489,7 @@ $('.notes-box').html(notesHtml);
                 }
             }).change();
 
-            $(document).on('click', '.actionBtn', function() {
+            $(document).on('click', '.actionBtn', function () {
                 var modal = $('#actionModal');
                 let data = $(this).data();
                 modal.modal('show');
