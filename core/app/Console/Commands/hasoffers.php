@@ -33,7 +33,7 @@ class hasoffers extends Command
             "api_key" => $apiKey,
             "Target" => "Affiliate_Report",
             "Method" => "getConversions",
-            "fields" => ["PayoutGroup.name", "Offer.name", "Stat.affiliate_info1", "Goal.name", "Stat.conversion_status", "Stat.currency", "Stat.ad_id", "OfferUrl.name", "OfferUrl.id", "PayoutGroup.id", "Stat.date", "Stat.approved_payout", "OfferUrl.preview_url", "Stat.sale_amount"],
+            "fields" => ["PayoutGroup.name","Stat.tune_event_id ", "Offer.name", "Stat.affiliate_info1", "Goal.name", "Stat.conversion_status", "Stat.currency", "Stat.ad_id", "OfferUrl.name", "OfferUrl.id", "PayoutGroup.id", "Stat.date", "Stat.approved_payout", "OfferUrl.preview_url", "Stat.sale_amount"],
             "filters" => [
                 "Stat.datetime" => [
                     "conditional" => "BETWEEN",
@@ -84,7 +84,7 @@ class hasoffers extends Command
                 } elseif ($cashback_type == 2) {
                     $orderAmount = (float) preg_replace('~[^0-9.,]~', '', $transaction['Stat']['sale_amount']);
                     $orderAmount = round($orderAmount, 2);
-                    $amount = ((float) $cashback / 100) * $orderAmount;
+                    $amount = ((float) $click->model->user_percentage  / 100) * $orderAmount;
                     $amount = convertCurrency($amount, $transaction['Stat']['currency']);
                     $cashback_type = 1;
                 }
@@ -95,7 +95,9 @@ class hasoffers extends Command
                     $status = 1;
                 }
 
-                $siteTransaction = ClickTransaction::where('click_id', $clickRef)->first();
+                $siteTransaction = ClickTransaction::where('network_transaction_id', (int)$transaction['Stat']['tune_event_id'])
+                    ->where('click_id', $clickRef)
+                    ->first();
 
                 if ($siteTransaction) {
                     Transaction::where('id', $siteTransaction->transaction_id)
@@ -111,6 +113,8 @@ class hasoffers extends Command
                     $clickTransaction = new ClickTransaction;
                     $clickTransaction->click_id = $click->id;
                     $clickTransaction->transaction_id = $newSiteTransaction->id;
+                    $clickTransaction->network_transaction_id = (int) $transaction['Stat']['tune_event_id'];
+                    $clickTransaction->category_rate = $transaction['Offer']['name'];
                     $clickTransaction->save();
                 }
             }
