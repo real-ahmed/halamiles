@@ -60,7 +60,6 @@
                                 <div class="form-group">
                                     <label class="form-control-label">@lang('Category')</label>
                                     <select name="category_id" class="form-control" required>
-                                        <option hidden>@lang('Select One')</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}"
                                                 {{ @$store->category_id == $category->id ? 'selected' : '' }}>
@@ -148,7 +147,7 @@
 
                                     <select name="network_id" class="form-control" required>
 
-                                        <option hidden>@lang('Select One')</option>
+
 
                                         @foreach ($networks as $network)
                                             <option

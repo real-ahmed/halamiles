@@ -547,6 +547,8 @@ class ManageCouponController extends Controller
         $imgValidation = $id ? 'nullable' : 'required';
         $request->validate([
             'name'              => 'required|max:40',
+            'category_id'          => 'required|int',
+
             'image'             => ["$imgValidation", 'image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
             'cashback'          => 'required|numeric',
             'url'               => 'required|max:255',
