@@ -587,6 +587,7 @@ class ManageCouponController extends Controller
         $store->featured  = $request->featured ? 1 : 0;
         $store->terms = $request->terms;
         $store->description = $request->description;
+        $store->save();
         $store->countries()->sync($request->input('countries_id'), true);
 
         $store->channels()->sync($request->input('channels_id'), true);
