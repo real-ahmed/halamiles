@@ -69,7 +69,7 @@ class awin extends Command
                     $status = 1;
                 }
 
-                $siteTransaction = ClickTransaction::where('network_transaction_id', (int) $transaction['action_id'])
+                $siteTransaction = ClickTransaction::where('network_transaction_id', (int) $transaction['id'])
                     ->where('click_id', $clickRef)
                     ->first();
 
