@@ -2,12 +2,7 @@
 
 @section('panel')
 
-
-
-
-
     <div class="row">
-
 
 
         <div class="col-lg-12">
@@ -19,156 +14,159 @@
                     <div class="table-responsive--md  table-responsive">
 
 
-
                         <table class="table table--light style--two spaced-rows">
 
                             <thead>
 
-                                <tr>
+                            <tr>
 
-                                    <th>@lang('S.N.')</th>
+                                <th>@lang('S.N.')</th>
 
-                                    <th>@lang('Name')</th>
+                                <th>@lang('Name')</th>
 
-                                    <th>@lang('Category')</th>
+                                <th>@lang('Category')</th>
 
-                                    <th>@lang('Coupon')</th>
+                                <th>@lang('Coupon')</th>
 
-                                    <th>@lang('Faverate')</th>
+                                <th>@lang('Faverate')</th>
 
-                                    <th>@lang('Cashback')</th>
+                                <th>@lang('Cashback')</th>
+                                <th>@lang('User Percentage')</th>
 
-                                    @if (!request()->routeIs('admin.store.featured'))
-                                        <th>@lang('Featured')</th>
-                                    @endif
+                                @if (!request()->routeIs('admin.store.featured'))
+                                    <th>@lang('Featured')</th>
+                                @endif
 
-                                    <th>@lang('Status')</th>
+                                <th>@lang('Status')</th>
 
-                                    <th>{{ __('Marketing channels') }}</th>
-                                    <th>{{ __('views') }}</th>
+                                <th>{{ __('Marketing channels') }}</th>
+                                <th>{{ __('views') }}</th>
 
 
-                                    <th>@lang('Action')</th>
+                                <th>@lang('Action')</th>
 
-                                </tr>
+                            </tr>
 
                             </thead>
 
                             <tbody>
 
-                                @forelse($stores as $store)
-                                    <tr>
+                            @forelse($stores as $store)
+                                <tr>
 
-                                        <td data-label="@lang('S.N')">{{ $stores->firstItem() + $loop->index }}</td>
+                                    <td data-label="@lang('S.N')">{{ $stores->firstItem() + $loop->index }}</td>
 
-                                        <td data-label="@lang('Name')">{{ __($store->name) }}</td>
+                                    <td data-label="@lang('Name')">{{ __($store->name) }}</td>
 
-                                        <td data-label="@lang('Username')">
+                                    <td data-label="@lang('Username')">
 
-                                            @if ($store->category_id)
-                                                {{ $store->category->name }}
-                                            @else
-                                                -
-                                            @endif
-
-                                        </td>
-
-                                        <td data-label="@lang('Coupon')">
-
-                                            <a href="{{ route('admin.coupon.store', $store->id) }}"
-                                                class="icon-btn">{{ $store->coupons->count() }}</a>
-
-                                        </td>
-
-
-
-                                        <td data-label="@lang('Coupon')">
-
-                                            <a href="{{ route('admin.users.by_store', $store->id) }}"
-                                                style='background: #af1515;'
-                                                class="icon-btn">{{ $store->favorite->count() }}</a>
-
-                                        </td>
-
-                                        <td data-label="@lang('Cashback')">
-
-                                            {{ __($store->cashback) }}{{ $store->cashbacktype->name }}
-
-                                        </td>
-
-                                        @if (!request()->routeIs('admin.store.featured'))
-                                            <td data-label="@lang('Featured')">
-
-                                                @if ($store->featured == 1)
-                                                    <span
-                                                        class="text--small badge font-weight-normal badge--success">@lang('Yes')</span>
-                                                @else
-                                                    <span
-                                                        class="text--small badge font-weight-normal badge--warning">@lang('No')</span>
-                                                @endif
-
-                                            </td>
+                                        @if ($store->category_id)
+                                            {{ $store->category->name }}
+                                        @else
+                                            -
                                         @endif
 
-                                        <td data-label="@lang('Status')">
+                                    </td>
 
-                                            @if ($store->status == 1)
+                                    <td data-label="@lang('Coupon')">
+
+                                        <a href="{{ route('admin.coupon.store', $store->id) }}"
+                                           class="icon-btn">{{ $store->coupons->count() }}</a>
+
+                                    </td>
+
+
+                                    <td data-label="@lang('Coupon')">
+
+                                        <a href="{{ route('admin.users.by_store', $store->id) }}"
+                                           style='background: #af1515;'
+                                           class="icon-btn">{{ $store->favorite->count() }}</a>
+
+                                    </td>
+
+                                    <td data-label="@lang('Cashback')">
+
+                                        {{ __($store->cashback) }}{{ $store->cashbacktype->name }}
+
+                                    </td>
+
+
+                                    <td data-label="@lang('User Percentage')">
+
+                                        {{ __($store->user_percentage) }}
+
+                                    </td>
+
+                                    @if (!request()->routeIs('admin.store.featured'))
+                                        <td data-label="@lang('Featured')">
+
+                                            @if ($store->featured == 1)
                                                 <span
-                                                    class="text--small badge font-weight-normal badge--success">@lang('Active')</span>
+                                                    class="text--small badge font-weight-normal badge--success">@lang('Yes')</span>
                                             @else
                                                 <span
-                                                    class="text--small badge font-weight-normal badge--warning">@lang('Inactive')</span>
+                                                    class="text--small badge font-weight-normal badge--warning">@lang('No')</span>
                                             @endif
 
                                         </td>
+                                    @endif
 
-                                        <td data-label="{{ __('Marketing channels') }}">
+                                    <td data-label="@lang('Status')">
 
-                                            @if (!empty($store->marketing_channels))
-                                                @foreach (json_decode($store->marketing_channels) as $key => $val)
-                                                    @if ($val == 1)
-                                                        <span
-                                                            class="text--small badge font-weight-normal badge--success">{{ $key }}</span>
-                                                    @endif
-                                                @endforeach
-                                            @endif
+                                        @if ($store->status == 1)
+                                            <span
+                                                class="text--small badge font-weight-normal badge--success">@lang('Active')</span>
+                                        @else
+                                            <span
+                                                class="text--small badge font-weight-normal badge--warning">@lang('Inactive')</span>
+                                        @endif
 
-                                        </td>
+                                    </td>
 
-                                        <td data-label="{{ __('views') }}">
+                                    <td data-label="{{ __('Marketing channels') }}">
 
-                                            {{ $store->views }}
+                                        @if (!empty($store->marketing_channels))
+                                            @foreach (json_decode($store->marketing_channels) as $key => $val)
+                                                @if ($val == 1)
+                                                    <span
+                                                        class="text--small badge font-weight-normal badge--success">{{ $key }}</span>
+                                                @endif
+                                            @endforeach
+                                        @endif
 
-                                        </td>
+                                    </td>
+
+                                    <td data-label="{{ __('views') }}">
+
+                                        {{ $store->views }}
+
+                                    </td>
 
 
+                                    <td data-label="@lang('Action')">
+                                        <button class="btn btn-outline--primary box--shadow1 addStore"
+                                                data-store_id="{{ $store->id }}"
+                                                data-original-title="@lang('cashback category')">
+                                            <i class="las la-plus"></i>
+                                            @lang('cashback category')
+                                        </button>
+
+                                        <a class="btn btn-sm btn-outline--primary"
+                                           href="{{ route('admin.store.save',$store->id) }}">
+                                            <i class="las la-pen text-shadow"></i> @lang('Edit')
+                                        </a>
+                                    </td>
 
 
+                                </tr>
+                            @empty
 
-                                        <td data-label="@lang('Action')">
-                                            <button class="btn btn-outline--primary box--shadow1 addStore"
-                                            data-store_id="{{ $store->id }}"
-                                             data-original-title="@lang('cashback category')">
-                                                <i class="las la-plus"></i>
-                                                @lang('cashback category')
-                                            </button>
-                                        
-                                            <a class="btn btn-sm btn-outline--primary" href="{{ route('admin.store.save',$store->id) }}">
-                                                <i class="las la-pen text-shadow"></i> @lang('Edit')
-                                            </a>
-                                        </td>
-                                        
+                                <tr>
 
-                                    </tr>
-                                @empty
+                                    <td class="text-muted text-center" colspan="100%">{{ __($emptyMessage) }}</td>
 
-                                    <tr>
-
-                                        <td class="text-muted text-center" colspan="100%">{{ __($emptyMessage) }}</td>
-
-                                    </tr>
-                                @endforelse
-
+                                </tr>
+                            @endforelse
 
 
                             </tbody>
@@ -182,7 +180,7 @@
                 <div class="card-footer py-4">
 
                     <a href="{{ route('admin.download.csv', ['table' => 'stores', 'columns' => 'id,category_id,name,image,cashback,offer_cashback,ending_date,cashbacktype_id,description,url,terms,featured,marketing_channels,network_id,status,created_at']) }}"
-                        class="btn btn-outline--primary box--shadow1">Download CSV</a>
+                       class="btn btn-outline--primary box--shadow1">Download CSV</a>
 
                     @if ($stores->hasPages())
                         {{ paginateLinks($stores) }}
@@ -256,6 +254,17 @@
                         </div>
 
                         <div class="form-group">
+                            <label>@lang('user %')</label>
+                            <div class="input-group">
+                                <input class="form-control" type="number" step="any" name="user_percentage"
+                                       value="{{ $store ? $store->getRawOriginal('user_percentage') : old('user_percentage') }}"
+                                       required>
+                                <span style='width=65px;' class="input-group-text">%</span>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
 
                             <label>@lang('Category Url')</label>
 
@@ -268,8 +277,8 @@
                             <label>@lang('Status')</label>
 
                             <input type="checkbox" data-width="100%" data-onstyle="-success" data-offstyle="-danger"
-                                data-bs-toggle="toggle" data-on="@lang('Active')" data-off="@lang('Inactive')"
-                                name="status">
+                                   data-bs-toggle="toggle" data-on="@lang('Active')" data-off="@lang('Inactive')"
+                                   name="status">
 
                         </div>
                     </div>
@@ -280,8 +289,6 @@
             </div>
         </div>
     </div>
-
-
 
 @endsection
 
@@ -296,19 +303,25 @@
 
             <select name="sort_by" id="column" onchange="document.getElementById('sortForm').submit()">
 
-                <option value="created_at" @if (request()->input('sort_by') == 'created_at') selected @endif>Created at</option>
+                <option value="created_at" @if (request()->input('sort_by') == 'created_at') selected @endif>Created
+                    at
+                </option>
 
                 <option value="name" @if (request()->input('sort_by') == 'name') selected @endif>Name</option>
 
-                <option value="updated_at" @if (request()->input('sort_by') == 'updated_at') selected @endif>Last Update</option>
+                <option value="updated_at" @if (request()->input('sort_by') == 'updated_at') selected @endif>Last
+                    Update
+                </option>
 
-                <option value="cashback" @if (request()->input('sort_by') == 'cashback') selected @endif>Cashback</option>
+                <option value="cashback" @if (request()->input('sort_by') == 'cashback') selected @endif>Cashback
+                </option>
 
             </select>
 
             <select name="sort_direction" id="order" onchange="document.getElementById('sortForm').submit()">
 
-                <option value="desc" @if (request()->input('sort_direction') == 'desc') selected @endif>Descending</option>
+                <option value="desc" @if (request()->input('sort_direction') == 'desc') selected @endif>Descending
+                </option>
 
                 <option value="asc" @if (request()->input('sort_direction') == 'asc') selected @endif>Ascending</option>
 
@@ -325,22 +338,22 @@
             <div class="input-group has_append">
 
                 <input type="text" name="search" class="form-control bg-white text--black"
-                    placeholder="@lang('Search Store')" value="{{ request()->search }}">
+                       placeholder="@lang('Search Store')" value="{{ request()->search }}">
 
                 <button class="btn btn--primary" type="submit"><i class="fa fa-search"></i></button>
 
                 <input type="hidden" name="sort_by"
-                    value="{{ request()->query('sort_by') ? request()->query('sort_by') : 'created_at' }}">
+                       value="{{ request()->query('sort_by') ? request()->query('sort_by') : 'created_at' }}">
 
                 <input type="hidden" name="sort_direction"
-                    value="{{ request()->query('sort_direction') ? request()->query('sort_direction') : 'desc' }}">
+                       value="{{ request()->query('sort_direction') ? request()->query('sort_direction') : 'desc' }}">
 
             </div>
 
         </form>
 
         <a class="btn btn-outline--primary box--shadow1 "
-        href="{{ route('admin.store.save') }}"><i
+           href="{{ route('admin.store.save') }}"><i
                 class="las la-plus"></i>@lang('Add New')</a>
 
     </div>
@@ -371,8 +384,7 @@
         }
 
 
-
-        @media (max-width:400px) {
+        @media (max-width: 400px) {
 
             .header-search-form {
 
@@ -394,11 +406,6 @@
         }
 
 
-
-
-
-
-
         #sortForm {
 
             display: flex;
@@ -412,15 +419,12 @@
         }
 
 
-
         #sort_by,
-
         #sort_direction {
 
             font-size: 17px;
 
             margin-right: 20px;
-
 
 
         }
@@ -441,13 +445,13 @@
 
 @push('script')
     <script>
-        (function($) {
+        (function ($) {
             "use strict";
 
             var modal = $('#storeModal');
             var action = '{{ route('admin.store-category.save') }}';
 
-            $('.addStore').click(function() {
+            $('.addStore').click(function () {
                 var data = $(this).data();
 
                 modal.find('.modal-title').text("@lang('Add Category')");
@@ -459,12 +463,12 @@
                 modal.modal('show');
             });
 
-            modal.on('shown.bs.modal', function(e) {
+            modal.on('shown.bs.modal', function (e) {
                 $(document).off('focusin.modal');
             });
 
 
-            modal.on('hidden.bs.modal', function() {
+            modal.on('hidden.bs.modal', function () {
 
                 modal.find('form')[0].reset();
 

@@ -3,18 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
-use App\Models\Country;
-use App\Models\Channel;
-use App\Models\Package;
-use App\Models\Note;
-use App\Models\User;
-use App\Models\Coupon;
-use App\Models\Product;
-use App\Models\Network;
 use App\Models\Cashbacktype;
+use App\Models\Category;
+use App\Models\Channel;
+use App\Models\Country;
+use App\Models\Coupon;
+use App\Models\Network;
+use App\Models\Note;
+use App\Models\Package;
+use App\Models\Product;
 use App\Models\Store;
 use App\Models\StoresCategory;
+use App\Models\User;
 use App\Rules\FileTypeValidate;
 use Illuminate\Http\Request;
 
@@ -22,21 +22,56 @@ class ManageCouponController extends Controller
 {
 
     protected $pageTitle = 'All Coupons';
-    protected $view      = 'admin.coupon.index';
-    protected $coupons  = null;
+    protected $view = 'admin.coupon.index';
+    protected $coupons = null;
 
-    protected $storeView      = 'admin.coupon.stores';
-    protected $storeFormView      = 'admin.coupon.store_form';
-    protected $stores         = null;
+    protected $storeView = 'admin.coupon.stores';
+    protected $storeFormView = 'admin.coupon.store_form';
+    protected $stores = null;
 
 
-    protected $productsView      = 'admin.coupon.products';
-    protected $products         = null;
+    protected $productsView = 'admin.coupon.products';
+    protected $products = null;
 
     public function allCoupons($store = null)
     {
         $data = $this->filterCoupons(null, $store);
         return view($this->view, $data);
+    }
+
+    protected function filterCoupons($scope = null, $store = null)
+    {
+        $coupons = Coupon::query();
+        if ($scope) {
+            $coupons = Coupon::$scope();
+            $this->pageTitle = ucfirst($scope) . ' Coupons';
+        }
+
+        $searchKey = request()->search;
+
+        if ($searchKey) {
+            $coupons = $coupons->where(function ($query) use ($searchKey) {
+                $query->where('title', 'like', "%$searchKey%")
+                    ->orWhereHas('category', function ($category) use ($searchKey) {
+                        $category->where('name', 'like', "%$searchKey%");
+                    })->orWhereHas('store', function ($store) use ($searchKey) {
+                        $store->where('name', 'like', "%$searchKey%");
+                    })->orWhereHas('user', function ($user) use ($searchKey) {
+                        $user->where('username', 'like', "%$searchKey%");
+                    });
+            });
+        }
+
+        if ($store) {
+            $coupons = $coupons->where('store_id', $store);
+        }
+
+        $coupons = $coupons->with('user', 'category', 'store')->latest()->paginate(getPaginate());
+
+        $data['coupons'] = $coupons;
+        $data['pageTitle'] = $this->pageTitle;
+
+        return $data;
     }
 
     public function pendingCoupons()
@@ -75,47 +110,12 @@ class ManageCouponController extends Controller
         return view($this->view, $data);
     }
 
-    protected function filterCoupons($scope = null, $store = null)
-    {
-        $coupons = Coupon::query();
-        if ($scope) {
-            $coupons        = Coupon::$scope();
-            $this->pageTitle = ucfirst($scope) . ' Coupons';
-        }
-
-        $searchKey = request()->search;
-
-        if ($searchKey) {
-            $coupons = $coupons->where(function ($query) use ($searchKey) {
-                $query->where('title', 'like', "%$searchKey%")
-                    ->orWhereHas('category', function ($category) use ($searchKey) {
-                        $category->where('name', 'like', "%$searchKey%");
-                    })->orWhereHas('store', function ($store) use ($searchKey) {
-                        $store->where('name', 'like', "%$searchKey%");
-                    })->orWhereHas('user', function ($user) use ($searchKey) {
-                        $user->where('username', 'like', "%$searchKey%");
-                    });
-            });
-        }
-
-        if ($store) {
-            $coupons = $coupons->where('store_id', $store);
-        }
-
-        $coupons = $coupons->with('user', 'category', 'store')->latest()->paginate(getPaginate());
-
-        $data['coupons'] = $coupons;
-        $data['pageTitle'] = $this->pageTitle;
-
-        return $data;
-    }
-
     public function couponForm($id = 0)
     {
-        $pageTitle  = ($id ? 'Update' : 'Add') . ' Coupon';
+        $pageTitle = ($id ? 'Update' : 'Add') . ' Coupon';
         $categories = Category::where('status', 1)->get();
-        $coupon    = $id ? Coupon::findOrFail($id) : '';
-        $stores     = Store::where('status', 1)->orderBy('user_id')->get();
+        $coupon = $id ? Coupon::findOrFail($id) : '';
+        $stores = Store::where('status', 1)->orderBy('user_id')->get();
         $countries = Country::all();
         $channels = Channel::all();
         $cashbacktypes = Cashbacktype::all();
@@ -128,30 +128,30 @@ class ManageCouponController extends Controller
     {
         $imgValidation = $id ? 'nullable' : 'required';
         $request->validate([
-            'title'       => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'category_id' => 'required|integer',
-            'store_id'    => 'required|integer|exists:stores,id',
+            'store_id' => 'required|integer|exists:stores,id',
             'coupon_code' => 'max:40',
             'ending_date' => 'required|date',
-            'cashback'    => 'required|numeric|gt:0',
-            'url'         => 'max:255',
-            "store_id"    => 'required|string|max:40',
+            'cashback' => 'required|numeric|gt:0',
+            'url' => 'max:255',
+            "store_id" => 'required|string|max:40',
             'description' => 'required',
-            'image'       => ["$imgValidation", 'image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
+            'image' => ["$imgValidation", 'image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
         ]);
 
-        $coupon             = new Coupon();
-        $notification        = 'added';
+        $coupon = new Coupon();
+        $notification = 'added';
 
         if ($id) {
-            $coupon      = Coupon::findOrFail($id);
+            $coupon = Coupon::findOrFail($id);
             $coupon->status = $request->status ? 1 : 2;
             $notification = 'updated';
         }
 
         if ($request->hasFile('image')) {
             try {
-                $old            = $coupon->image;
+                $old = $coupon->image;
                 $coupon->image = fileUploader($request->image, getFilePath('coupon'), getFileSize('coupon'), $old);
             } catch (\Exception $e) {
                 $notify[] = ['error', 'Couldn\'t upload your image'];
@@ -159,17 +159,18 @@ class ManageCouponController extends Controller
             }
         }
 
-        $coupon->title       = $request->title;
+        $coupon->title = $request->title;
         $coupon->category_id = $request->category_id;
-        $coupon->store_id    = $request->store_id;
+        $coupon->store_id = $request->store_id;
         $coupon->coupon_code = $request->coupon_code;
         $coupon->ending_date = $request->ending_date;
-        $coupon->cashback    = $request->cashback;
-        $coupon->url         = $request->url;
+        $coupon->cashback = $request->cashback;
+        $coupon->url = $request->url;
         $coupon->description = $request->description;
-        $coupon->today_deal  = $request->today_deal ? 1 : 0;
-        $coupon->top_deal    = $request->top_deal ? 1 : 0;
-        $coupon->cashback_type  = $request->cashbacktype_id;
+        $coupon->today_deal = $request->today_deal ? 1 : 0;
+        $coupon->top_deal = $request->top_deal ? 1 : 0;
+        $coupon->cashback_type = $request->cashbacktype_id;
+        $coupon->user_percentage = $request->user_percentage;
         $coupon->save();
         $coupon->countries()->sync($request->input('countries_id'), true);
 
@@ -198,29 +199,10 @@ class ManageCouponController extends Controller
     }
 
 
-
     public function allProducts($store = null)
     {
         $data = $this->filterProducts(null, $store);
 
-        return view($this->productsView, $data);
-    }
-    public function activeProducts()
-    {
-        $data = $this->filterProducts('active');
-        return view($this->productsView, $data);
-    }
-
-
-
-    public function expiredProducts()
-    {
-        $data = $this->filterProducts('expired');
-        return view($this->productsView, $data);
-    }
-    public function trendProducts()
-    {
-        $data = $this->filterProducts('trend');
         return view($this->productsView, $data);
     }
 
@@ -258,6 +240,24 @@ class ManageCouponController extends Controller
         return $data;
     }
 
+    public function activeProducts()
+    {
+        $data = $this->filterProducts('active');
+        return view($this->productsView, $data);
+    }
+
+    public function expiredProducts()
+    {
+        $data = $this->filterProducts('expired');
+        return view($this->productsView, $data);
+    }
+
+    public function trendProducts()
+    {
+        $data = $this->filterProducts('trend');
+        return view($this->productsView, $data);
+    }
+
     public function productForm($id = 0)
     {
         $pageTitle = ($id ? 'Update' : 'Add') . ' Product';
@@ -287,17 +287,17 @@ class ManageCouponController extends Controller
     {
         $imgValidation = $id ? 'nullable' : 'required';
         $request->validate([
-            'title'         => 'required|string|max:255',
-            'category_id'   => 'required|integer',
-            'store_id'      => 'required|integer|exists:stores,id',
-            'cashback'      => 'required|numeric|gt:0',
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|integer',
+            'store_id' => 'required|integer|exists:stores,id',
+            'cashback' => 'required|numeric|gt:0',
             'cashbacktype_id' => 'required|integer',
-            'ending_date'   => 'required|date',
-            'url'           => 'nullable|url|max:255',
-            'image'         => ["$imgValidation", 'image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
-            'countries_id'  => 'required|array',
-            'channels_id'   => 'required|array',
-            'description'   => 'required|string',
+            'ending_date' => 'required|date',
+            'url' => 'nullable|url|max:255',
+            'image' => ["$imgValidation", 'image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
+            'countries_id' => 'required|array',
+            'channels_id' => 'required|array',
+            'description' => 'required|string',
         ]);
 
         $product = $id ? Product::findOrFail($id) : new Product();
@@ -313,16 +313,17 @@ class ManageCouponController extends Controller
             }
         }
 
-        $product->title          = $request->title;
-        $product->category_id    = $request->category_id;
-        $product->store_id       = $request->store_id;
-        $product->cashback       = $request->cashback;
-        $product->cashback_type  = $request->cashbacktype_id;
-        $product->ending_date    = $request->ending_date;
-        $product->url            = $request->url;
-        $product->description    = $request->description;
-        $product->status         = $request->has('status') ? 1 : 0; // adjust according to your logic for status
-        $product->trend          = $request->has('trend') ? 1 : 0;
+        $product->title = $request->title;
+        $product->category_id = $request->category_id;
+        $product->store_id = $request->store_id;
+        $product->cashback = $request->cashback;
+        $product->cashback_type = $request->cashbacktype_id;
+        $product->ending_date = $request->ending_date;
+        $product->url = $request->url;
+        $product->description = $request->description;
+        $product->status = $request->has('status') ? 1 : 0; // adjust according to your logic for status
+        $product->trend = $request->has('trend') ? 1 : 0;
+        $product->user_percentage = $request->user_percentage;
 
         $product->save();
         $product->countries()->sync($request->input('countries_id'));
@@ -335,8 +336,8 @@ class ManageCouponController extends Controller
 
     public function packages()
     {
-        $pageTitle  = 'All Package';
-        $packages   = Package::latest()->paginate(getPaginate());
+        $pageTitle = 'All Package';
+        $packages = Package::latest()->paginate(getPaginate());
         $categories = Category::paginate(getPaginate());
 
         return view('admin.coupon.packages', compact('pageTitle', 'packages', 'categories'));
@@ -345,23 +346,23 @@ class ManageCouponController extends Controller
     public function savePackage(Request $request, $id = 0)
     {
         $request->validate([
-            'name'     => 'required|max:40',
+            'name' => 'required|max:40',
             'duration' => 'required|integer|min:1',
-            'price'    => 'required|numeric|gt:0',
+            'price' => 'required|numeric|gt:0',
         ]);
 
-        $package      = new Package();
+        $package = new Package();
         $notification = 'added';
 
         if ($id) {
-            $package         = Package::findOrFail($id);
+            $package = Package::findOrFail($id);
             $package->status = $request->status ? 1 : 0;
-            $notification    = 'updated';
+            $notification = 'updated';
         }
 
-        $package->name     = $request->name;
+        $package->name = $request->name;
         $package->duration = $request->duration;
-        $package->price    = $request->price;
+        $package->price = $request->price;
         $package->save();
 
         $notify[] = ['success', "Package $notification successfully"];
@@ -369,11 +370,10 @@ class ManageCouponController extends Controller
     }
 
 
-
     public function categories()
     {
-        $pageTitle  = 'All Stores Categories';
-        $categories   = StoresCategory::query();
+        $pageTitle = 'All Stores Categories';
+        $categories = StoresCategory::query();
         $searchKey = request()->search;
         if ($searchKey) {
             $categories = $categories->where(function ($query) use ($searchKey) {
@@ -386,7 +386,7 @@ class ManageCouponController extends Controller
 
         $categories = $categories->latest()->paginate(getPaginate());
 
-        $stores     = Store::where('status', 1)->orderBy('name')->get();
+        $stores = Store::where('status', 1)->orderBy('name')->get();
         $cashbacktypes = Cashbacktype::all();
         return view('admin.coupon.categories', compact('pageTitle', 'categories', 'stores', 'cashbacktypes'));
     }
@@ -394,32 +394,33 @@ class ManageCouponController extends Controller
     public function saveCategory(Request $request, $id = 0)
     {
         $request->validate([
-            'name'     => 'required|max:40',
-            'cashback'    => 'required|numeric|gt:0',
-            'url'               => 'required|max:255',
+            'name' => 'required|max:40',
+            'cashback' => 'required|numeric|gt:0',
+            'url' => 'required|max:255',
         ]);
 
-        $category      = new StoresCategory();
+        $category = new StoresCategory();
         $notification = 'added';
 
         if ($id) {
-            $category         = StoresCategory::findOrFail($id);
+            $category = StoresCategory::findOrFail($id);
             $category->status = $request->status ? 1 : 0;
-            $notification    = 'updated';
+            $notification = 'updated';
         }
 
-        $category->name     = $request->name;
+        $category->name = $request->name;
         $category->cashback = $request->cashback;
-        $category->store_id    = $request->store_id;
-        $category->cashbacktype_id    = $request->cashbacktype_id;
-        $category->url    = $request->url;
+        $category->store_id = $request->store_id;
+        $category->cashbacktype_id = $request->cashbacktype_id;
+        $category->url = $request->url;
+        $category->user_percentage = $request->user_percentage;
+
 
         $category->save();
 
         $notify[] = ['success', "Category $notification successfully"];
         return back()->withNotify($notify);
     }
-
 
 
     public function stores()
@@ -429,62 +430,8 @@ class ManageCouponController extends Controller
         $categories = Category::where('status', 1)->get();
         $countries = Country::all();
         $channels = Channel::all();
-        $cashbacktypes =  Cashbacktype::all();
-        $networks = Network::all();
-        return view($this->storeView, $data, compact('categories', 'countries', 'channels', 'cashbacktypes', 'networks'));
-    }
-
-    public function storeForm($id=0)
-    {
-
-        $pageTitle = ($id ? 'Update' : 'Add') . ' Store';
-        $store    = $id ? Store::findOrFail($id) : '';
-        $categories = Category::where('status', 1)->get();
-        $countries = Country::all();
-        $channels = Channel::all();
-        $cashbacktypes =  Cashbacktype::all();
-        $networks = Network::all();
-        return view($this->storeFormView, compact('categories', 'countries', 'channels', 'cashbacktypes', 'networks','pageTitle','store'));
-
-    }
-
-    public function active()
-    {
-        $data = $this->filterStores('active');
-        $data['pageTitle'] = 'Active Stores';
-        $categories = Category::where('status', 1)->get();
-        $countries = Country::all();
-        $channels = Channel::all();
-        $cashbacktypes =  Cashbacktype::all();
-        $networks = Network::all();
-        return view($this->storeView, $data, compact('categories', 'countries', 'channels', 'cashbacktypes', 'networks'));
-    }
-
-    public function featured()
-    {
-        $data = $this->filterStores('featured');
-        $data['pageTitle'] = 'Featured Stores';
-        $categories = Category::where('status', 1)->get();
-        $countries = Country::all();
-        $channels = Channel::all();
-        $cashbacktypes =  Cashbacktype::all();
-        $networks = Network::all();
-        return view($this->storeView, $data, compact('categories', 'countries', 'channels', 'cashbacktypes', 'networks'));
-    }
-    public function userFavorite($id)
-    {
-        $user = User::findOrFail($id);
-
-        $favorites = $user->favorite()->pluck('store_id')->toArray();
-
-        $data = $this->filterStores('whereIn', ['id', $favorites]);
-        $data['pageTitle'] = $user->fullname . ' Favorites';
-        $categories = Category::where('status', 1)->get();
-        $countries = Country::all();
-        $channels = Channel::all();
         $cashbacktypes = Cashbacktype::all();
         $networks = Network::all();
-
         return view($this->storeView, $data, compact('categories', 'countries', 'channels', 'cashbacktypes', 'networks'));
     }
 
@@ -522,6 +469,60 @@ class ManageCouponController extends Controller
         return $data;
     }
 
+    public function storeForm($id = 0)
+    {
+
+        $pageTitle = ($id ? 'Update' : 'Add') . ' Store';
+        $store = $id ? Store::findOrFail($id) : '';
+        $categories = Category::where('status', 1)->get();
+        $countries = Country::all();
+        $channels = Channel::all();
+        $cashbacktypes = Cashbacktype::all();
+        $networks = Network::all();
+        return view($this->storeFormView, compact('categories', 'countries', 'channels', 'cashbacktypes', 'networks', 'pageTitle', 'store'));
+
+    }
+
+    public function active()
+    {
+        $data = $this->filterStores('active');
+        $data['pageTitle'] = 'Active Stores';
+        $categories = Category::where('status', 1)->get();
+        $countries = Country::all();
+        $channels = Channel::all();
+        $cashbacktypes = Cashbacktype::all();
+        $networks = Network::all();
+        return view($this->storeView, $data, compact('categories', 'countries', 'channels', 'cashbacktypes', 'networks'));
+    }
+
+    public function featured()
+    {
+        $data = $this->filterStores('featured');
+        $data['pageTitle'] = 'Featured Stores';
+        $categories = Category::where('status', 1)->get();
+        $countries = Country::all();
+        $channels = Channel::all();
+        $cashbacktypes = Cashbacktype::all();
+        $networks = Network::all();
+        return view($this->storeView, $data, compact('categories', 'countries', 'channels', 'cashbacktypes', 'networks'));
+    }
+
+    public function userFavorite($id)
+    {
+        $user = User::findOrFail($id);
+
+        $favorites = $user->favorite()->pluck('store_id')->toArray();
+
+        $data = $this->filterStores('whereIn', ['id', $favorites]);
+        $data['pageTitle'] = $user->fullname . ' Favorites';
+        $categories = Category::where('status', 1)->get();
+        $countries = Country::all();
+        $channels = Channel::all();
+        $cashbacktypes = Cashbacktype::all();
+        $networks = Network::all();
+
+        return view($this->storeView, $data, compact('categories', 'countries', 'channels', 'cashbacktypes', 'networks'));
+    }
 
     public function storeList(Request $request)
     {
@@ -533,7 +534,7 @@ class ManageCouponController extends Controller
         $stores = $query->latest()->paginate(getPaginate());
         foreach ($stores as $store) {
             $response[] = [
-                "id"   => $store->id,
+                "id" => $store->id,
                 "text" => $store->name,
             ];
         }
@@ -546,23 +547,23 @@ class ManageCouponController extends Controller
     {
         $imgValidation = $id ? 'nullable' : 'required';
         $request->validate([
-            'name'              => 'required|max:40',
-            'category_id'          => 'required|int',
+            'name' => 'required|max:40',
+            'category_id' => 'required|int',
 
-            'image'             => ["$imgValidation", 'image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
-            'cashback'          => 'required|numeric',
-            'url'               => 'required|max:255',
+            'image' => ["$imgValidation", 'image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
+            'cashback' => 'required|numeric',
+            'url' => 'required|max:255',
         ]);
 
-        $store        = new Store();
+        $store = new Store();
         $notification = 'added';
-        $oldImage     = '';
+        $oldImage = '';
 
         if ($id) {
-            $store        = Store::findOrFail($id);
+            $store = Store::findOrFail($id);
             $store->status = $request->status ? 1 : 0;
             $notification = 'updated';
-            $oldImage     = $store->image;
+            $oldImage = $store->image;
         }
 
         if ($request->hasFile('image')) {
@@ -574,24 +575,24 @@ class ManageCouponController extends Controller
             }
         }
 
-        $store->name      = $request->name;
-        $store->category_id  = $request->category_id;
-        $store->cashbacktype_id  = $request->cashbacktype_id;
-        $store->network_id  = $request->network_id;
-        $store->cashback  = $request->cashback;
-        $store->user_percentage  = $request->user_percentage;
-        $store->offer_cashback  = $request->offer_cashback;
-        $store->ending_date       = date('Y-m-d H:i:s', strtotime($request->ending_date)); // Format the date correctly
+        $store->name = $request->name;
+        $store->category_id = $request->category_id;
+        $store->cashbacktype_id = $request->cashbacktype_id;
+        $store->network_id = $request->network_id;
+        $store->cashback = $request->cashback;
+        $store->user_percentage = $request->user_percentage;
+        $store->offer_cashback = $request->offer_cashback;
+        $store->ending_date = date('Y-m-d H:i:s', strtotime($request->ending_date)); // Format the date correctly
 
         $store->url = $request->url;
-        $store->featured  = $request->featured ? 1 : 0;
+        $store->featured = $request->featured ? 1 : 0;
         $store->terms = $request->terms;
         $store->description = $request->description;
         $store->save();
         $store->countries()->sync($request->input('countries_id'), true);
 
         $store->channels()->sync($request->input('channels_id'), true);
-        $store->marketing_channels  =  json_encode(['social' => $request->social ? 1 : 0, 'email' => $request->email ? 1 : 0, 'cash' => $request->cash ? 1 : 0, 'coupon' => $request->coupon ? 1 : 0]);
+        $store->marketing_channels = json_encode(['social' => $request->social ? 1 : 0, 'email' => $request->email ? 1 : 0, 'cash' => $request->cash ? 1 : 0, 'coupon' => $request->coupon ? 1 : 0]);
 
         $store->save();
 

@@ -129,6 +129,20 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>@lang('user %')</label>
+                                    <div class="input-group">
+                                        <input class="form-control" type="number" step="any" name="user_percentage"
+                                               value="{{ $store ? $store->getRawOriginal('user_percentage') : old('user_percentage') }}"
+                                               required>
+                                        <span style='width=65px;' class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>@lang('Offer Url')</label>
