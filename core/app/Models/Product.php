@@ -18,7 +18,10 @@ class Product extends Model
     {
         return $this->belongsTo(Cashbacktype::class, 'cashback_type');
     }
-
+    public function withdrawMethods()
+    {
+        return $this->morphMany(ModelWithdrawMethod::class, 'model');
+    }
     public function category()
     {
         return $this->belongsTo(Category::class);

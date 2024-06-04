@@ -275,6 +275,9 @@ class ManageCouponController extends Controller
         $channels = Channel::all();
         $cashbacktypes = CashbackType::all();
         $networks = Network::all();
+        $withdrawMethods = WithdrawMethod::where('status', 1)->get();
+
+
 
         return view('admin.coupon.product_form', compact(
             'pageTitle',
@@ -284,7 +287,8 @@ class ManageCouponController extends Controller
             'countries',
             'channels',
             'cashbacktypes',
-            'networks'
+            'networks',
+            'withdrawMethods'
         ));
     }
 
@@ -331,8 +335,11 @@ class ManageCouponController extends Controller
         $product->user_percentage = $request->user_percentage;
 
         $product->save();
+        $this->updateWithdrawMethods($product, $request->withdrawlmethod_id);
+
         $product->countries()->sync($request->input('countries_id'));
         $product->channels()->sync($request->input('channels_id'));
+        $product->save();
 
         $notify[] = ['success', "Product $notification successfully"];
         return back()->withNotify($notify);
