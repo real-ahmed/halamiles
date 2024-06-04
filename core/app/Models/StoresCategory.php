@@ -13,6 +13,12 @@ class StoresCategory extends Model
     {
         return $this->belongsTo(Store::class);
     }
+
+    public function withdrawMethods()
+    {
+        return $this->morphMany(ModelWithdrawMethod::class, 'model');
+    }
+
     public function cashbacktype()
     {
         return $this->belongsTo(Cashbacktype::class);

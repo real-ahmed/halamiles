@@ -392,8 +392,10 @@ class ManageCouponController extends Controller
         $categories = $categories->latest()->paginate(getPaginate());
 
         $stores = Store::where('status', 1)->orderBy('name')->get();
+        $withdrawMethods = WithdrawMethod::where('status', 1)->get();
+
         $cashbacktypes = Cashbacktype::all();
-        return view('admin.coupon.categories', compact('pageTitle', 'categories', 'stores', 'cashbacktypes'));
+        return view('admin.coupon.categories', compact('pageTitle', 'categories', 'stores', 'cashbacktypes','withdrawMethods'));
     }
 
     public function saveCategory(Request $request, $id = 0)
@@ -419,7 +421,8 @@ class ManageCouponController extends Controller
         $category->cashbacktype_id = $request->cashbacktype_id;
         $category->url = $request->url;
         $category->user_percentage = $request->user_percentage;
-
+        $category->save();
+        $this->updateWithdrawMethods($category, $request->withdrawlmethod_id);
 
         $category->save();
 
@@ -437,7 +440,9 @@ class ManageCouponController extends Controller
         $channels = Channel::all();
         $cashbacktypes = Cashbacktype::all();
         $networks = Network::all();
-        return view($this->storeView, $data, compact('categories', 'countries', 'channels', 'cashbacktypes', 'networks'));
+        $withdrawMethods = WithdrawMethod::where('status', 1)->get();
+
+        return view($this->storeView, $data, compact('categories', 'countries', 'channels', 'cashbacktypes', 'networks','withdrawMethods'));
     }
 
     protected function filterStores($scope = null, $parameters = [])

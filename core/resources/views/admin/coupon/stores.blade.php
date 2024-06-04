@@ -39,7 +39,7 @@
 
                                 <th>@lang('Status')</th>
 
-                                <th>{{ __('Marketing channels') }}</th>
+{{--                                <th>{{ __('Marketing channels') }}</th>--}}
                                 <th>{{ __('views') }}</th>
 
 
@@ -93,7 +93,7 @@
 
                                     <td data-label="@lang('User Percentage')">
 
-                                        {{ __($store->user_percentage) }}
+                                        {{ __((int)$store->user_percentage).'%' }}
 
                                     </td>
 
@@ -123,18 +123,18 @@
 
                                     </td>
 
-                                    <td data-label="{{ __('Marketing channels') }}">
+{{--                                    <td data-label="{{ __('Marketing channels') }}">--}}
 
-                                        @if (!empty($store->marketing_channels))
-                                            @foreach (json_decode($store->marketing_channels) as $key => $val)
-                                                @if ($val == 1)
-                                                    <span
-                                                        class="text--small badge font-weight-normal badge--success">{{ $key }}</span>
-                                                @endif
-                                            @endforeach
-                                        @endif
+{{--                                        @if (!empty($store->marketing_channels))--}}
+{{--                                            @foreach (json_decode($store->marketing_channels) as $key => $val)--}}
+{{--                                                @if ($val == 1)--}}
+{{--                                                    <span--}}
+{{--                                                        class="text--small badge font-weight-normal badge--success">{{ $key }}</span>--}}
+{{--                                                @endif--}}
+{{--                                            @endforeach--}}
+{{--                                        @endif--}}
 
-                                    </td>
+{{--                                    </td>--}}
 
                                     <td data-label="{{ __('views') }}">
 
@@ -270,6 +270,19 @@
 
                             <input class="form-control" type="text" name="url" value="" required>
 
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label">@lang('Accepted Withdrawal Methods')</label>
+                            <div class="scrollbox">
+                                @foreach ($withdrawMethods as $key => $method)
+                                    <div class="{{ $key % 2 == 0 ? 'even' : 'odd' }}">
+                                        <input name="withdrawlmethod_id[]" value="{{ $method->id }}" type="checkbox"
+
+                                        >
+                                        {{ $method->name }}
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
 
                         <div class="form-group statusGroup">

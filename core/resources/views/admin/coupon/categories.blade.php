@@ -48,6 +48,8 @@
                                                 data-cashbacktype_id="{{ $category->cashbacktype->id }}"
                                                 data-url="{{ $category->url }}"
                                                 data-store_id="{{ $category->store_id }}"
+                                                data-user_percentage="{{ $category->user_percentage }}"
+                                                data-withdraw_methods="{{ json_encode($category->withdrawMethods->pluck('withdraw_method_id')->toArray()) }}"
                                                 data-toggle="tooltip" data-original-title="@lang('Edit')">
                                             <i class="las la-pen text-shadow"></i> @lang('Edit')
                                         </button>
@@ -81,7 +83,7 @@
                     @csrf
                     <div class="modal-body">
 
-                        <div class="form-group">
+                        <div class="form-group" style="display: none">
                             <label>@lang('Store')</label>
                             <select name="store_id" class="form-control" required>
                                 <option value="" hidden>@lang('Select One')</option>
@@ -118,6 +120,7 @@
                             </div>
 
                         </div>
+
                         <div class="form-group">
                             <label>@lang('user %')</label>
                             <div class="input-group">
@@ -127,34 +130,47 @@
                                 <span style='width=65px;' class="input-group-text">%</span>
                             </div>
                         </div>
+
+
+                        <div class="form-group">
+
+                            <label>@lang('Category Url')</label>
+
+                            <input class="form-control" type="text" name="url" value="" required>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label">@lang('Accepted Withdrawal Methods')</label>
+                            <div class="scrollbox">
+                                @foreach ($withdrawMethods as $key => $method)
+                                    <div class="{{ $key % 2 == 0 ? 'even' : 'odd' }}">
+                                        <input name="withdrawlmethod_id[]" value="{{ $method->id }}" type="checkbox"
+
+                                        >
+                                        {{ $method->name }}
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div class="form-group statusGroup">
+
+                            <label>@lang('Status')</label>
+
+                            <input type="checkbox" data-width="100%" data-onstyle="-success" data-offstyle="-danger"
+                                   data-bs-toggle="toggle" data-on="@lang('Active')" data-off="@lang('Inactive')"
+                                   name="status">
+
+                        </div>
                     </div>
-
-
-                    <div class="form-group">
-
-                        <label>@lang('Category Url')</label>
-
-                        <input class="form-control" type="text" name="url" value="" required>
-
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn--primary w-100">@lang('Submit')</button>
                     </div>
-
-                    <div class="form-group statusGroup">
-
-                        <label>@lang('Status')</label>
-
-                        <input type="checkbox" data-width="100%" data-onstyle="-success" data-offstyle="-danger"
-                               data-bs-toggle="toggle" data-on="@lang('Active')" data-off="@lang('Inactive')"
-                               name="status">
-
-                    </div>
+                </form>
             </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn--primary w-100">@lang('Submit')</button>
-            </div>
-            </form>
         </div>
     </div>
-    </div>
+
 @endsection
 
 @push('breadcrumb-plugins')
@@ -237,6 +253,7 @@
                 modal.find('[name=name]').val(data.name);
                 modal.find('[name="cashback"]').val(data.cashback)
                 modal.find('[name="url"]').val(data.url)
+                modal.find('[name="user_percentage"]').val(data.user_percentage)
                 modal.find('[name="cashbacktype_id"]').val(data.cashbacktype_id);
 
                 if (data.status == 1) {
@@ -244,6 +261,12 @@
                 } else {
                     modal.find('input[name=status]').bootstrapToggle('off');
                 }
+
+                var withdrawMethods = data.withdraw_methods;
+                modal.find('input[name="withdrawlmethod_id[]"]').each(function() {
+                    $(this).prop('checked', withdrawMethods.includes(parseInt($(this).val())));
+                });
+
 
                 modal.find('form').attr('action', action + '/' + data.id);
                 modal.modal('show');
