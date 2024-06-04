@@ -9,4 +9,11 @@ class WithdrawMethod extends Model
 {
     use HasFactory;
 
+    public function  modelWithdrawMethod()
+    {
+        return $this->hasMany(ModelWithdrawMethod::class);
+    }
+
+
+
 }

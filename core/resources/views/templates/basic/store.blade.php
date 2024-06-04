@@ -1,9 +1,9 @@
 @extends($activeTemplate . 'layouts.frontend')
 
 @php
-    
+
     $popularStore = getContent('popular_store.content', true);
-    
+
     // Filter stores by the user's country code
 
 $user = auth()->user();
@@ -46,7 +46,7 @@ if ($user_id != 0) {
             ->limit(10)
             ->get();
     }
-    
+
 @endphp
 
 
@@ -99,7 +99,7 @@ if ($user_id != 0) {
 
                         <div class='go-to-store'>
 
-                            <a class='go-to-store-btn' target="_blank" 
+                            <a class='go-to-store-btn' target="_blank"
                                 href='{{ route('redirect.store', $store->id) }}'>{{ __('Go To Store') }}</a>
 
                             @if ($USERID != 0)
@@ -120,6 +120,7 @@ if ($user_id != 0) {
 
                         <a class='store-terms' data-terms='{{ $store->terms }}' data-channels='{{ $store->channels }}'
                             data-store_image='{{ getImage(getFilePath('store') . '/' . $store->image) }}'
+                           data-withdraw_methods='{{ $activeWithdrawMethodNames}}'
                             href="javascript:void(0)">{{ __('Terms & Conditions') }}</a>
 
                     </div>
@@ -180,7 +181,7 @@ if ($user_id != 0) {
                                             <td data-label="@lang('Cashback')">
                                                 {{ $category->cashback }}{{ $store->cashbacktype->sign }}</td>
                                             <td>
-                                                <a href="{{ route('redirect.category', $category->id) }}" target="_blank" 
+                                                <a href="{{ route('redirect.category', $category->id) }}" target="_blank"
                                                     class="btn-sm btn--base">
                                                     @lang('Get Offer')
                                                 </a>

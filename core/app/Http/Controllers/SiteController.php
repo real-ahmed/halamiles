@@ -16,6 +16,7 @@ use App\Models\GeneralSetting;
 
 use App\Models\Language;
 
+use App\Models\ModelWithdrawMethod;
 use App\Models\Page;
 
 use App\Models\Coupon;
@@ -486,14 +487,16 @@ class SiteController extends Controller
         $isfav = Favorite::where('user_id', $USERID)->where('store_id', $store->id)->exists();
 
         $countries = $store->countries->toArray();
+        $activeWithdrawMethodNames = json_encode( ModelWithdrawMethod::activeWithdrawMethodNames($store->withdrawMethods));
+
 
         if ($store->status != 1) {
             return  view($this->activeTemplate . 'store_not_available', compact('pageTitle'));
         }
 
-        if (in_array($USERCOUNTRY, array_column($countries, 'country_code')) || in_array('W', array_column($countries, 'country_code')) || $USERID == 0) {
+        if ((in_array($USERCOUNTRY, array_column($countries, 'country_code')) || in_array('W', array_column($countries, 'country_code')) || $USERID == 0) ) {
 
-            return view($this->activeTemplate . 'store', compact('pageTitle', 'store', 'coupons', 'sections', 'USERID', 'category', 'isfav'));
+            return view($this->activeTemplate . 'store', compact('pageTitle', 'store', 'coupons', 'sections', 'USERID', 'category', 'isfav' ,'activeWithdrawMethodNames'));
         } else {
 
             return view($this->activeTemplate . 'store_not_available', compact('pageTitle'));

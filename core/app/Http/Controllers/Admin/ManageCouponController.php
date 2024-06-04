@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Channel;
 use App\Models\Country;
 use App\Models\Coupon;
+use App\Models\ModelWithdrawMethod;
 use App\Models\Network;
 use App\Models\Note;
 use App\Models\Package;
@@ -15,6 +16,7 @@ use App\Models\Product;
 use App\Models\Store;
 use App\Models\StoresCategory;
 use App\Models\User;
+use App\Models\WithdrawMethod;
 use App\Rules\FileTypeValidate;
 use Illuminate\Http\Request;
 
@@ -477,9 +479,10 @@ class ManageCouponController extends Controller
         $categories = Category::where('status', 1)->get();
         $countries = Country::all();
         $channels = Channel::all();
+        $withdrawMethods = WithdrawMethod::where('status', 1)->get();
         $cashbacktypes = Cashbacktype::all();
         $networks = Network::all();
-        return view($this->storeFormView, compact('categories', 'countries', 'channels', 'cashbacktypes', 'networks', 'pageTitle', 'store'));
+        return view($this->storeFormView, compact('categories', 'countries', 'channels', 'cashbacktypes', 'networks', 'pageTitle', 'store','withdrawMethods'));
 
     }
 
@@ -545,11 +548,16 @@ class ManageCouponController extends Controller
 
     public function saveStore(Request $request, $id = 0)
     {
+
+
         $imgValidation = $id ? 'nullable' : 'required';
         $request->validate([
             'name' => 'required|max:40',
             'category_id' => 'required|int',
-
+            'withdrawlmethod_id' => 'required|array',
+            'countries_id' => 'required|array',
+            'channels_id' => 'required|array',
+            'withdrawlmethod_id.*' => 'exists:withdraw_methods,id', // Ensure each ID exists in the withdraw_methods table
             'image' => ["$imgValidation", 'image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
             'cashback' => 'required|numeric',
             'url' => 'required|max:255',
@@ -588,6 +596,37 @@ class ManageCouponController extends Controller
         $store->featured = $request->featured ? 1 : 0;
         $store->terms = $request->terms;
         $store->description = $request->description;
+
+
+
+        // Get the valid withdrawal method IDs from the request
+        $withdrawMethodIds = array_filter($request->withdrawlmethod_id, function($id) {
+            return WithdrawMethod::find($id) !== null;
+        });
+
+        // Get current withdrawal methods attached to the store
+        $currentMethods = $store->withdrawMethods->pluck('withdraw_method_id')->toArray();
+
+        // Find IDs to add and remove
+        $methodsToAdd = array_diff($withdrawMethodIds, $currentMethods);
+        $methodsToRemove = array_diff($currentMethods, $withdrawMethodIds);
+
+        // Remove the methods that are no longer associated
+        foreach ($methodsToRemove as $methodId) {
+            $store->withdrawMethods()->where('withdraw_method_id', $methodId)->delete();
+        }
+
+        // Add new methods
+        foreach ($methodsToAdd as $methodId) {
+            $withdrawMethod = WithdrawMethod::find($methodId);
+            if ($withdrawMethod) {
+                $modelWithdrawMethod = new ModelWithdrawMethod();
+                $modelWithdrawMethod->withdrawMethod()->associate($withdrawMethod);
+                $store->withdrawMethods()->save($modelWithdrawMethod);
+            }
+        }
+
+
         $store->save();
         $store->countries()->sync($request->input('countries_id'), true);
 

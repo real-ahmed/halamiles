@@ -255,6 +255,19 @@
                                         @endforeach
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="form-control-label">@lang('Accepted Withdrawal Methods')</label>
+                                    <div class="scrollbox">
+                                        @foreach ($withdrawMethods as $key => $method)
+                                            <div class="{{ $key % 2 == 0 ? 'even' : 'odd' }}">
+                                                <input name="withdrawlmethod_id[]" value="{{ $method->id }}" type="checkbox"
+                                                    {{ in_array($method->id, $store->withdrawMethods->pluck('withdraw_method_id')->toArray()) ? 'checked' : '' }}
+                                                >
+                                                {{ $method->name }}
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -268,8 +281,7 @@
                                         @endforeach
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
+
                                 <div class="form-group">
 
                                     <label>@lang('Featured')</label>
@@ -282,6 +294,7 @@
 
                                 </div>
                             </div>
+
 
                             @if($store)
 

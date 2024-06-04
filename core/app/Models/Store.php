@@ -74,25 +74,25 @@ class Store extends Model
                 $date = Carbon::now();
             }
         }
-    
+
         // Check if the cashback attribute exists and has a value
         if (isset($this->attributes['offer_cashback']) && isset($this->attributes['ending_date'])) {
             $endingDate = Carbon::parse($this->attributes['ending_date']);
-    
+
             // Check if the offer is still valid
             if ($endingDate->gte($date)) {
                 return $this->attributes['offer_cashback']; // Return offer cashback
             }
         }
-    
+
         // Check if the cashback attribute exists and has a value
         if (isset($this->attributes['cashback'])) {
             return $this->attributes['cashback']; // Return regular cashback
         }
-    
+
         return 0; // Return 0 if neither offer cashback nor regular cashback is available
     }
-    
+
 
     function gethasOfferAttribute($date = null)
     {
@@ -107,22 +107,22 @@ class Store extends Model
                 $date = Carbon::now();
             }
         }
-    
+
         // Check if the cashback attribute exists and has a value
         if (isset($this->attributes['offer_cashback']) && isset($this->attributes['ending_date'])) {
             $endingDate = Carbon::parse($this->attributes['ending_date']);
-    
+
             // Check if the offer is still valid
             if ($endingDate->gte($date)) {
                 return true;
             }
         }
-    
+
         // Check if the cashback attribute exists and has a value
         if (isset($this->attributes['cashback'])) {
             return false;
         }
-    
+
         return 0; // Return 0 if neither offer cashback nor regular cashback is available
 
     }
@@ -146,6 +146,12 @@ class Store extends Model
     {
         return $this->morphMany(Click::class, 'model');
     }
+
+    public function withdrawMethods()
+    {
+        return $this->morphMany(ModelWithdrawMethod::class, 'model');
+    }
+
 
     public function getViewsAttribute()
     {
