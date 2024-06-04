@@ -54,6 +54,11 @@ class Coupon extends Model
         });
     }
 
+    public function withdrawMethods()
+    {
+        return $this->morphMany(ModelWithdrawMethod::class, 'model');
+    }
+
     public function scopeInactive()
     {
         return $this->where('status', 2)->where('ending_date', '>', now());

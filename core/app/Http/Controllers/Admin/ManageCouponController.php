@@ -122,8 +122,9 @@ class ManageCouponController extends Controller
         $channels = Channel::all();
         $cashbacktypes = Cashbacktype::all();
         $networks = Network::all();
+        $withdrawMethods = WithdrawMethod::where('status', 1)->get();
 
-        return view('admin.coupon.coupon_form', compact('pageTitle', 'countries', 'channels', 'cashbacktypes', 'networks', 'categories', 'coupon', 'stores'));
+        return view('admin.coupon.coupon_form', compact('pageTitle', 'countries', 'channels', 'cashbacktypes', 'networks', 'categories', 'coupon', 'stores','withdrawMethods'));
     }
 
     public function saveCoupon(Request $request, $id = 0)
@@ -173,6 +174,8 @@ class ManageCouponController extends Controller
         $coupon->top_deal = $request->top_deal ? 1 : 0;
         $coupon->cashback_type = $request->cashbacktype_id;
         $coupon->user_percentage = $request->user_percentage;
+        $this->updateWithdrawMethods($coupon, $request->withdrawlmethod_id);
+
         $coupon->save();
         $coupon->countries()->sync($request->input('countries_id'), true);
 
@@ -600,33 +603,10 @@ class ManageCouponController extends Controller
 
 
         // Get the valid withdrawal method IDs from the request
-        $withdrawMethodIds = array_filter($request->withdrawlmethod_id, function($id) {
-            return WithdrawMethod::find($id) !== null;
-        });
-
-        // Get current withdrawal methods attached to the store
-        $currentMethods = $store->withdrawMethods->pluck('withdraw_method_id')->toArray();
-
-        // Find IDs to add and remove
-        $methodsToAdd = array_diff($withdrawMethodIds, $currentMethods);
-        $methodsToRemove = array_diff($currentMethods, $withdrawMethodIds);
-
-        // Remove the methods that are no longer associated
-        foreach ($methodsToRemove as $methodId) {
-            $store->withdrawMethods()->where('withdraw_method_id', $methodId)->delete();
-        }
-
-        // Add new methods
-        foreach ($methodsToAdd as $methodId) {
-            $withdrawMethod = WithdrawMethod::find($methodId);
-            if ($withdrawMethod) {
-                $modelWithdrawMethod = new ModelWithdrawMethod();
-                $modelWithdrawMethod->withdrawMethod()->associate($withdrawMethod);
-                $store->withdrawMethods()->save($modelWithdrawMethod);
-            }
-        }
 
 
+
+        $this->updateWithdrawMethods($store, $request->withdrawlmethod_id);
         $store->save();
         $store->countries()->sync($request->input('countries_id'), true);
 
@@ -643,5 +623,35 @@ class ManageCouponController extends Controller
 
         $notify[] = ['success', "Store $notification successfully"];
         return back()->withNotify($notify);
+    }
+
+
+    public function updateWithdrawMethods($model, $withdrawlmethod_id)
+    {
+        $withdrawMethodIds = array_filter($withdrawlmethod_id, function($id) {
+            return WithdrawMethod::find($id) !== null;
+        });
+
+        // Get current withdrawal methods attached to the model
+        $currentMethods = $model->withdrawMethods->pluck('withdraw_method_id')->toArray();
+
+        // Find IDs to add and remove
+        $methodsToAdd = array_diff($withdrawMethodIds, $currentMethods);
+        $methodsToRemove = array_diff($currentMethods, $withdrawMethodIds);
+
+        // Remove the methods that are no longer associated
+        foreach ($methodsToRemove as $methodId) {
+            $model->withdrawMethods()->where('withdraw_method_id', $methodId)->delete();
+        }
+
+        // Add new methods
+        foreach ($methodsToAdd as $methodId) {
+            $withdrawMethod = WithdrawMethod::find($methodId);
+            if ($withdrawMethod) {
+                $modelWithdrawMethod = new ModelWithdrawMethod();
+                $modelWithdrawMethod->withdrawMethod()->associate($withdrawMethod);
+                $model->withdrawMethods()->save($modelWithdrawMethod);
+            }
+        }
     }
 }

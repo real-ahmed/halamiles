@@ -151,24 +151,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>@lang('Today\'s Deal')</label>
-                                    <input type="checkbox" data-width="100%" data-onstyle="-success"
-                                        data-offstyle="-danger" data-bs-toggle="toggle" data-on="@lang('Yes')"
-                                        data-off="@lang('No')" name="today_deal"
-                                        @if (@$coupon->today_deal) checked @endif>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>@lang('Top Deal')</label>
-                                    <input type="checkbox" data-width="100%" data-onstyle="-success"
-                                        data-offstyle="-danger" data-bs-toggle="toggle" data-on="@lang('Yes')"
-                                        data-off="@lang('No')" name="top_deal"
-                                        @if (@$coupon->top_deal) checked @endif>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                     <div class="">
@@ -185,6 +168,20 @@
                                         @endforeach
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="form-control-label">@lang('Accepted Withdrawal Methods')</label>
+                                    <div class="scrollbox">
+                                        @foreach ($withdrawMethods as $key => $method)
+                                            <div class="{{ $key % 2 == 0 ? 'even' : 'odd' }}">
+                                                <input name="withdrawlmethod_id[]" value="{{ $method->id }}" type="checkbox"
+                                                    {{ (isset($coupon->withdrawMethods) && in_array($method->id, $coupon->withdrawMethods->pluck('withdraw_method_id')->toArray())) ? 'checked' : '' }}
+                                                >
+                                                {{ $method->name }}
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div class="col-md-6">
@@ -197,6 +194,24 @@
                                                     {{ isset($coupon->channels) && in_array($channel->id, $coupon->channels->pluck('id')->toArray()) ? 'checked' : '' }}>{{ $channel->name }}
                                             </div>
                                         @endforeach
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>@lang('Today\'s Deal')</label>
+                                        <input type="checkbox" data-width="100%" data-onstyle="-success"
+                                               data-offstyle="-danger" data-bs-toggle="toggle" data-on="@lang('Yes')"
+                                               data-off="@lang('No')" name="today_deal"
+                                               @if (@$coupon->today_deal) checked @endif>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>@lang('Top Deal')</label>
+                                        <input type="checkbox" data-width="100%" data-onstyle="-success"
+                                               data-offstyle="-danger" data-bs-toggle="toggle" data-on="@lang('Yes')"
+                                               data-off="@lang('No')" name="top_deal"
+                                               @if (@$coupon->top_deal) checked @endif>
                                     </div>
                                 </div>
                             </div>

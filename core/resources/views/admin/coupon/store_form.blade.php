@@ -261,7 +261,7 @@
                                         @foreach ($withdrawMethods as $key => $method)
                                             <div class="{{ $key % 2 == 0 ? 'even' : 'odd' }}">
                                                 <input name="withdrawlmethod_id[]" value="{{ $method->id }}" type="checkbox"
-                                                    {{ in_array($method->id, $store->withdrawMethods->pluck('withdraw_method_id')->toArray()) ? 'checked' : '' }}
+                                                    {{ (isset($store->withdrawMethods) && in_array($method->id, $store->withdrawMethods->pluck('withdraw_method_id')->toArray())) ? 'checked' : '' }}
                                                 >
                                                 {{ $method->name }}
                                             </div>
@@ -294,7 +294,7 @@
 
                                 </div>
                             </div>
-
+x
 
                             @if($store)
 
