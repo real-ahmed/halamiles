@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\AcceptedCashoutMethod;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
@@ -84,6 +85,12 @@ class awin extends Command
                     $newSiteTransaction->cashbacktype_id = $cashback_type;
                     $newSiteTransaction->status = $status;
                     $newSiteTransaction->save();
+                    $acceptedWithdrawMethods = $click->model->withdrawMethods->pluck('id')->toArray();
+                    foreach ($acceptedWithdrawMethods as $methodId) {
+                        AcceptedCashoutMethod::create(
+                            ['withdraw_method_id'=>$methodId,'transaction_id'=>$newSiteTransaction->id]
+                        );
+                    }
                     $clickTransaction = new ClickTransaction;
                     $clickTransaction->click_id = $click->id;
                     $clickTransaction->transaction_id = $newSiteTransaction->id;

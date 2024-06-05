@@ -15,5 +15,11 @@ class WithdrawMethod extends Model
     }
 
 
+    public function acceptedCashoutMethods()
+    {
+        return $this->hasMany(AcceptedCashoutMethod::class);
+    }
+
+
 
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AcceptedCashoutMethod;
 use App\Models\Cashbacktype;
 use App\Models\Category;
 use App\Models\Channel;

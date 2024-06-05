@@ -35,6 +35,11 @@ class Transaction extends Model
         return $this->hasOne(ClickTransaction::class);
     }
 
+    public function AcceptedCashoutMethods()
+    {
+        return $this->belongsToMany(AcceptedCashoutMethod::class);
+    }
+
 
     public function withdrawal()
     {
@@ -81,7 +86,7 @@ class Transaction extends Model
     public function getTitleAttribute()
     {
         $type = $this->type;
-    
+
         switch ($type) {
             case 'credit':
                 return 'Credit Transaction';
@@ -106,7 +111,7 @@ class Transaction extends Model
     public function getCategoryAttribute()
     {
         $type = $this->type;
-    
+
         switch ($type) {
             case 'credit':
                 return 'Credit';

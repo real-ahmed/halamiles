@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\AcceptedCashoutMethod;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -111,6 +112,12 @@ class hasoffers extends Command
                     $newSiteTransaction->status = $status;
                     $newSiteTransaction->save();
                     $clickTransaction = new ClickTransaction;
+                    $acceptedWithdrawMethods = $click->model->withdrawMethods->pluck('id')->toArray();
+                    foreach ($acceptedWithdrawMethods as $methodId) {
+                        AcceptedCashoutMethod::create(
+                            ['withdraw_method_id'=>$methodId,'transaction_id'=>$newSiteTransaction->id]
+                        );
+                    }
                     $clickTransaction->click_id = $click->id;
                     $clickTransaction->transaction_id = $newSiteTransaction->id;
                     $clickTransaction->network_transaction_id = (int) $transaction['Stat']['tune_event_id'];
