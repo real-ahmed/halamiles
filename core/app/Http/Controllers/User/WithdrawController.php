@@ -43,7 +43,7 @@ class WithdrawController extends Controller
 
     public function withdrawVerification(Request $request)
     {
-        
+
         $pageTitle = 'Withdraw Verification';
         $methodId = $request->session()->get('withdraw_method_id');
         if (!$methodId) {
@@ -78,7 +78,7 @@ class WithdrawController extends Controller
         $method = WithdrawMethod::find($method->id);
         $general = GeneralSetting::first();
 
-        if ($request->amount > auth()->user()->balance) {
+        if ($request->amount > auth()->user()->BalanceWithdrawalMethod($method->id)) {
             throw ValidationException::withMessages(['amount' => 'Your balance is not enough']);
         }
 

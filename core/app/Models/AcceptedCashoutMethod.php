@@ -8,15 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class AcceptedCashoutMethod extends Model
 {
     use HasFactory;
+    protected $table='accepted_cashout_methods';
     protected $fillable = ['withdraw_method_id','transaction_id'];
 
     public function transaction()
     {
-        return $this->hasMany(Transaction::class);
+        return $this->belongsTo(Transaction::class);
     }
 
-    public function withdrawalMethods()
+    public function withdrawMethod()
     {
-        return $this->hasMany(WithdrawMethod::class);
+        return $this->belongsTo(WithdrawMethod::class);
     }
 }

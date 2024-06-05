@@ -16,7 +16,7 @@
                                 <select class="form-select form--control" name="method" required>
                                     <option  value="">@lang('Select One')</option>
                                     @foreach($methods as $data)
-                                    <option value="{{$data->id}}" >{{__($data->name)}} - {{__($data->currency)}} ({{$data->fixed_charge ? showAmount($data->fixed_charge).__($data->currency) : $data->percent_charge.'%'}} @lang("Charge"))</option>
+                                    <option value="{{$data->id}}" >{{__($data->name)}} - {{__($data->currency)}} ({{$data->fixed_charge ? showAmount($data->fixed_charge).__($data->currency) : $data->percent_charge.'%'}} @lang("Charge")) @lang("available balance"): {{auth()->user()->BalanceWithdrawalMethod($data->id)}}{{$general->cur_sym}} </option>
                                     @endforeach
                                 </select>
                             </div>

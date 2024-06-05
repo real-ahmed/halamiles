@@ -85,14 +85,14 @@ class User extends Authenticatable
     public function withdraws()
     {
         return $this->hasManyThrough(Withdrawal::class, Transaction::class);
-       
+
     }
 
 
     public function clicks()
     {
         return $this->hasMany(Click::class);
-       
+
     }
 
     public function coupons()
@@ -189,7 +189,7 @@ class User extends Authenticatable
 
     }
 
-    
+
 
     public function favorite(){
 
@@ -222,16 +222,20 @@ class User extends Authenticatable
         return $this->calculateBalance(1,1);
     }
 
+    public function BalanceWithdrawalMethod($cashoutMethodId){
+        return $this->calculateBalance(1,1,$cashoutMethodId);
+    }
+
     public function getPendingBalanceAttribute()
     {
         return $this->calculateBalance(1,0);
     }
-    
+
     public function getCancelledBalanceAttribute()
     {
         return $this->calculateBalance(1,2);
     }
-    
+
     public function getPointsAttribute()
     {
         return $this->calculateBalance(3,1);
@@ -246,13 +250,23 @@ class User extends Authenticatable
     {
         return $this->calculateBalance(3,2);
     }
-    
-    private function calculateBalance($cashbackTypeId,$status)
+
+    private function calculateBalance($cashbackTypeId,$status,$withdrawMethodId=null)
     {
         $transactions = $this->transactions->where('cashbacktype_id', $cashbackTypeId);
-    
+
+        if ($withdrawMethodId) {
+            $transactions->where(function($query) use ($withdrawMethodId) {
+                $query->whereHas('acceptedCashoutMethods', function($query) use ($withdrawMethodId) {
+                    $query->where('withdraw_method_id', $withdrawMethodId);
+                })->orWhere(function ($query) {
+                    $query->doesntHave('acceptedCashoutMethods');
+                });
+            });
+        }
+
         $balance = 0;
-    
+
         foreach ($transactions as $transaction) {
             if (in_array($transaction->type, ['credit', 'gift', 'referrer', 'referral', 'cashback']) && $transaction->status == $status) {
                 $balance += $transaction->amount;
@@ -260,17 +274,17 @@ class User extends Authenticatable
                 if ($status == 1 &&  $transaction->status != 2){
                     $balance -= $transaction->amount;
                 }
-                
+
             }elseif ($transaction->type == 'banned withdrawal') {
                 if ($status == 1 ){
                     $balance -= $transaction->amount;
                 }
             }
         }
-    
+
         return $balance;
     }
-    
+
 
 
 }

@@ -35,9 +35,14 @@ class Transaction extends Model
         return $this->hasOne(ClickTransaction::class);
     }
 
-    public function AcceptedCashoutMethods()
+    public function acceptedCashoutMethods()
     {
-        return $this->belongsToMany(AcceptedCashoutMethod::class);
+        return $this->hasMany(AcceptedCashoutMethod::class);
+    }
+
+    public function withdrawMethods()
+    {
+        return $this->belongsToMany(WithdrawMethod::class, 'accepted_cashout_methods');
     }
 
 

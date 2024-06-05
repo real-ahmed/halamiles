@@ -15,9 +15,12 @@ class WithdrawMethod extends Model
     }
 
 
-    public function acceptedCashoutMethods()
+
+
+
+    public function transactions()
     {
-        return $this->hasMany(AcceptedCashoutMethod::class);
+        return $this->belongsToMany(Transaction::class, 'accepted_cashout_methods');
     }
 
 

@@ -11,13 +11,13 @@
                             <h5 class="title">@lang('Withdraw')</h5>
                         </div>
                         <div class="card-body">
-                        <h4 style="text-align: center;">{{__('available balance is')}} {{$balance}}{{$general->cur_sym}}</h4>
+                        <h4 style="text-align: center;">{{__('available balance is')}} {{auth()->user()->BalanceWithdrawalMethod($method->id)}}{{$general->cur_sym}}</h4>
                             <div class="form-group">
                                 <label class="form-label">@lang('Withdraw Amount') </label>
                                 <input type="text" name = 'amount' required class="form-control form--control" placeholder='@lang("amount with"){{__($general->cur_text)}}'>
                                 </div>
                                 @if(is_array(json_decode($method->input_form, true)))
-                                
+
                                     @foreach(json_decode($method->input_form, true) as $key => $data)
                                         <div class="form-group">
                                             <label class="form-label">@lang($data['field_level'])</label>
